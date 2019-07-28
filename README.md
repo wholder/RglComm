@@ -14,12 +14,12 @@
  
  Note: while I designed and tested RigolComm with devices made by Rigol Technologies, it might also work with other devices that support IEEE 488 Commands sent over the devices's USB interface.  However, at the moment, I have onlu tested it with the following devices:
  
-  - Rigol DM3058 Digital Multimeter
-  - DP832 Prog DC Power Supply
-  - DS4024 Digital Oscilloscope
-  - DS1102E Digital Oscilloscope
-  - DSA815 Spectrum Analyzer
-  - DG4162 Func/Wave Generator
+  - Rigol **DM3058** Digital Multimeter
+  - Rigol **DP832** Prog DC Power Supply
+  - Rigol **DS4024** Digital Oscilloscope
+  - Rigol **DS1102E** Digital Oscilloscope
+  - Rigol **DSA815** Spectrum Analyzer
+  - Rigol **DG4162** Func/Wave Generator
   
 If you wish to use other devices, you will need to add them to the "devices" Map in RigolComm.java.  The utility program RigolScan.java (included in .jar file) can be used to scan for Rigol devices that are powered on and connected to the computer.  You can run it from the command line like this:
 
