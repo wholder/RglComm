@@ -1,6 +1,7 @@
+# RigolComm
+
 <p align="center"><img src="https://github.com/wholder/RigolComm/blob/master/images/RigolComm%20Screenshot.png"></p>
 
-# RigolComm
 **RigolComm** is a GUI-based program written in the Java Language that I created to experiment with communicating with and controlling Rigol devices using IEEE 488 Commands sent over the instument's USB interface.  My eventnual goal is to use this code as the basis for a program that can run simple scripts to make various measurements and perform calculations.  However, I'm publishing it here so that others can learn the basic techniques needed to use usb4java to communicate these kinds of devices.  The following is a list of example commands that can command a Rigol DM3058 Digital Multimeter to perform various checks and measurements:
 
  - **`*IDN?`** - Queries the equipment ID.
