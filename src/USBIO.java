@@ -18,11 +18,9 @@ class USBIO {
   private DeviceHandle      handle;
   private Context           context;
   private byte              iFace, outEnd, inEnd;
+  private int               maxPkt;
 
-  USBIO (short vendorId, short productId,  byte iFace, byte outEnd, byte inEnd) {
-    this.iFace = iFace;
-    this.outEnd = outEnd;
-    this.inEnd = inEnd;
+  USBIO (short vendorId, short productId) {
     context = new Context();
     int result = LibUsb.init(context);
     if (result < 0) {
@@ -40,6 +38,35 @@ class USBIO {
       short prod = desc.idProduct();
       if (!"hub".equalsIgnoreCase(usbClass) && vend == vendorId && prod == productId) {
         handle = new DeviceHandle();
+        byte numConfigs = desc.bNumConfigurations();
+        for (byte ii = 0; ii < numConfigs; ii++) {
+          ConfigDescriptor cDesc = new ConfigDescriptor();
+          if (LibUsb.getConfigDescriptor(device, ii, cDesc) >= 0) {
+            Interface[] ifaces = cDesc.iface();
+            for (Interface iface : ifaces) {
+              InterfaceDescriptor[] iDescs = iface.altsetting();
+              for (InterfaceDescriptor iDesc : iDescs) {
+                this.iFace = iDesc.bInterfaceNumber();
+                byte numEndpoints = iDesc.bNumEndpoints();
+                if (numEndpoints > 0) {
+                  EndpointDescriptor[] eDescs = iDesc.endpoint();
+                  for (EndpointDescriptor eDesc : eDescs) {
+                    byte endAdd = eDesc.bEndpointAddress();
+                    byte eAttr = eDesc.bmAttributes();
+                    if ((eAttr & 0x03) == 2) {
+                      if ((endAdd & 0x80) != 0) {
+                        this.inEnd = endAdd;
+                      } else {
+                        this.outEnd = endAdd;
+                      }
+                    }
+                    maxPkt = eDesc.wMaxPacketSize();
+                  }
+                }
+              }
+            }
+          }
+        }
         if ((result = LibUsb.open(device, handle)) >= 0) {
           if ((result = LibUsb.claimInterface(handle, iFace)) == LibUsb.SUCCESS) {
             return;

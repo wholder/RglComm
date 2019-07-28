@@ -25,20 +25,14 @@ public class RigolComm extends JFrame {
   private USBIO                 usb;
   private byte                  bTag;
 
-
-
   static class Rigol {
     String  name;
     short   vend, prod;
-    byte    intFace, outEnd, inEnd;
 
-    Rigol (String name, int vend, int prod, int intFace, int outEnd, int inEnd) {
+    Rigol (String name, int vend, int prod) {
       this.name = name;
       this.vend = (short) vend;
       this.prod = (short) prod;
-      this.intFace = (byte) intFace;
-      this.outEnd = (byte) outEnd;
-      this.inEnd = (byte) inEnd;
     }
 
     public String toString () {
@@ -50,60 +44,36 @@ public class RigolComm extends JFrame {
    *   Vendor 0x1AB1, Product 0x09C4
    *   Manufacturer: Rigol Technologies
    *   Product:      DM3000 SERIES
-   *     Interface: 0
-   *       BLK add: 0x01 (OUT) pkt: 64
-   *       BLK add: 0x82 (IN)  pkt: 64
-   *       INT add: 0x83 (IN)  pkt: 8
    *
    *   Vendor 0x1AB1, Product 0x0E11
    *   Manufacturer: Rigol Technologies.
    *   Product:      DP800 Serials
-   *     Interface: 0
-   *       INT add: 0x81 (IN)  pkt: 64
-   *       BLK add: 0x82 (IN)  pkt: 512
-   *       BLK add: 0x03 (OUT) pkt: 512
    *
    *   Vendor 0x1AB1, Product 0x04B1
    *   Manufacturer: Rigol Technologies
    *   Product:      DS4000 Series
-   *     Interface: 0
-   *       BLK add: 0x85 (IN)  pkt: 512
-   *       BLK add: 0x06 (OUT) pkt: 512
-   *       INT add: 0x81 (IN)  pkt: 64*
    *
    *   Vendor 0x1AB1, Product 0x0588
    *   Manufacturer: Rigol Technologies
    *   Product:      DS1000 SERIES
-   *     Interface: 0
-   *       BLK add: 0x01 (OUT) pkt: 64
-   *       BLK add: 0x82 (IN)  pkt: 64
-   *       INT add: 0x83 (IN)  pkt: 8
    *
    *   Vendor 0x1AB1, Product 0x0641
    *   Manufacturer: Rigol Technologies
    *   Product:      DG4162
-   *     Interface: 0
-   *       INT add: 0x88 (IN)  pkt: 64
-   *       BLK add: 0x02 (OUT) pkt: 512
-   *       BLK add: 0x86 (IN)  pkt: 512
    *
    *   Vendor 0x1AB1, Product 0x0960
    *   Manufacturer: Rigol Technologies
    *   Product:      DSA815
-   *     Interface: 0
-   *       INT add: 0x88 (IN)  pkt: 64
-   *       BLK add: 0x02 (OUT) pkt: 512
-   *       BLK add: 0x86 (IN)  pkt: 512
    */
 
   static {
-    //                     Selector Description             Vend    Prod  I   OUT    IN
-    devices.add(new Rigol("DM3058 Digital Multimeter",    0x1AB1, 0x09C4, 0, 0x01, 0x82));
-    devices.add(new Rigol("DP832 Prog DC Power Supply",   0x1AB1, 0x0E11, 0, 0x03, 0x82));
-    devices.add(new Rigol("DS4024 Digital Oscilloscope",  0x1AB1, 0x04B1, 0, 0x06, 0x85));
-    devices.add(new Rigol("DS1102E Digital Oscilloscope", 0x1AB1, 0x0588, 0, 0x01, 0x82));
-    devices.add(new Rigol("DSA815 Spectrum Analyzer",     0x1AB1, 0x0960, 0, 0x02, 0x86));
-    devices.add(new Rigol("DG4162 Func/Wave Generator",   0x1AB1, 0x0641, 0, 0x02, 0x86));
+    //                     Selector Description           VendId  ProdId
+    devices.add(new Rigol("DM3058 Digital Multimeter",    0x1AB1, 0x09C4));
+    devices.add(new Rigol("DP832 Prog DC Power Supply",   0x1AB1, 0x0E11));
+    devices.add(new Rigol("DS4024 Digital Oscilloscope",  0x1AB1, 0x04B1));
+    devices.add(new Rigol("DS1102E Digital Oscilloscope", 0x1AB1, 0x0588));
+    devices.add(new Rigol("DSA815 Spectrum Analyzer",     0x1AB1, 0x0960));
+    devices.add(new Rigol("DG4162 Func/Wave Generator",   0x1AB1, 0x0641));
   }
 
   public static void main (String[] args) {
@@ -119,7 +89,7 @@ public class RigolComm extends JFrame {
         Rigol sel = (Rigol) select.getSelectedItem();
         if (sel == null)
           return;
-        usb = new USBIO(sel.vend, sel.prod, sel.intFace, sel.outEnd, sel.inEnd);
+        usb = new USBIO(sel.vend, sel.prod);
         command.setText("");
         String rsp = sendCmd(cmd);
         if (rsp != null && rsp.length() > 0) {
