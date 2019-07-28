@@ -18,6 +18,7 @@ import java.util.prefs.Preferences;
 
 public class RigolComm extends JFrame {
   private transient Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
+  private transient boolean     running;
   private static List<Rigol>    devices = new LinkedList<>();
   private JTextArea             text = new JTextArea();
   private JTextField            command;
@@ -81,6 +82,7 @@ public class RigolComm extends JFrame {
   }
 
   private void doCommand () {
+    running = true;
     String cmd = command.getText();
     if ("scan".equalsIgnoreCase(cmd)) {
       appendLine(RigolScan.doScan());
@@ -102,6 +104,7 @@ public class RigolComm extends JFrame {
         if (usb != null) {
           usb.close();
         }
+        running = false;
       }
     }
   } 
@@ -123,7 +126,9 @@ public class RigolComm extends JFrame {
     select = new JComboBox<>(devices.toArray(new Rigol[0]));
     try {
       select.setSelectedIndex(prefs.getInt("select", 0));
-    } catch (Exception ex) {}
+    } catch (Exception ex) {
+      // Ignore
+    }
     select.addActionListener(ev -> prefs.putInt("select", select.getSelectedIndex()));
     controls.add(select);
     JButton run = new JButton("RUN");
@@ -154,8 +159,10 @@ public class RigolComm extends JFrame {
   }
 
   private void startTests () {
-    Thread worker = new Thread(this::doCommand);
-    worker.start();
+    if (!running){
+      Thread worker = new Thread(this::doCommand);
+      worker.start();
+    }
   }
 
   private String sendCmd (String cmd) {
@@ -176,38 +183,35 @@ public class RigolComm extends JFrame {
     for (int ii = 0; ii < cmd.length(); ii++) {
       buf.write(cmd.charAt(ii));
     }
+    buf.write('\n');
     while ((buf.size() & 0x03) != 0) {
       buf.write(0x00);        // Padding
     }
     appendLine("Snd: " + cmd);
     usb.send(buf.toByteArray());
     if (cmd.contains("?")) {
-      try {
-        // Allow time for instument to switch mode, if needed
-        Thread.sleep(200);
-      } catch (InterruptedException ex) {
-        ex.printStackTrace();
-      }
       bTag++;
+      int xferSize = (usb.maxPkt / 2) - 12;
       StringBuilder rec = new StringBuilder();
       buf.reset();
-      buf.write(2);             //  0: MsgID
-      buf.write(bTag);          //  1: bTag
-      buf.write(bTag ^ 0xFF);   //  2: bTagInverse
-      buf.write(0x00);          //  3: Reserved
-      buf.write(32-12);         //  4: TransferSize
-      buf.write(0x00);          //  5: TransferSize
-      buf.write(0x00);          //  6: TransferSize
-      buf.write(0x00);          //  7: TransferSize
-      buf.write(0x00);          //  8: bmTransfer Attributes (EOM is set)
-      buf.write(0x00);          //  9: Reserved(0x00)
-      buf.write(0x00);          // 10: Reserved(0x00)
-      buf.write(0x00);          // 11: Reserved(0x00)
+      buf.write(2);               //  0: MsgID
+      buf.write(bTag);            //  1: bTag
+      buf.write(bTag ^ 0xFF);     //  2: bTagInverse
+      buf.write(0x00);            //  3: Reserved
+      buf.write(xferSize & 0xFF); //  4: TransferSize
+      buf.write(xferSize >> 8);   //  5: TransferSize
+      buf.write(0x00);            //  6: TransferSize
+      buf.write(0x00);            //  7: TransferSize
+      buf.write(0x00);            //  8: bmTransfer Attributes (EOM is set)
+      buf.write(0x00);            //  9: Reserved(0x00)
+      buf.write(0x00);            // 10: Reserved(0x00)
+      buf.write(0x00);            // 11: Reserved(0x00)
       byte[] data;
       do {
         usb.send(buf.toByteArray());
+        // delay(50);
         data = usb.receive();
-        int size = data[4];
+        int size = ((int) data[4] & 0xFF) + (((int) data[5] & 0xFF) << 8);
         for (int ii = 0; ii < size; ii++) {
           rec.append((char) data[12 + ii]);
         }
@@ -215,6 +219,15 @@ public class RigolComm extends JFrame {
       return rec.toString();
     }
     return null;
+  }
+
+  private void delay (int ms) {
+    try {
+      // Allow time for instrument to switch mode, if needed
+      Thread.sleep(ms);
+    } catch (InterruptedException ex) {
+      ex.printStackTrace();
+    }
   }
 
   private void appendLine (String line) {

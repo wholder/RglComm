@@ -4,12 +4,14 @@
 
 **RigolComm** is a GUI-based program written in the Java Language that I created to experiment with communicating with and controlling Rigol devices using IEEE 488 Commands [USBTMC-USB488](http://sdpha2.ucsd.edu/Lab_Equip_Manuals/usbtmc_usb488_subclass_1_00.pdf) sent over the instrument's USB interface.  My eventual goal is to use this code as the basis for a program that can run simple scripts to make various measurements and perform calculations (sort of a poor man's LabVIEW™), so stay tuned if you're interested.  However, I'm publishing it here so that others can learn the basic techniques needed to use usb4java to communicate these kinds of devices.  My implementation of the USBTMC-USB488 protocol is just enough to enable RigolComm to send commands and receive reponses and does not implement all the details of the full specification.
 
-To use it, first select the device to command using the selector, type the command into the text field and press the Enter key, or press the "**`RUN`**" button. Commands common to most instruments include:
+To use RigolComm, first select the device to communicate with using the selector, then type the command into the text field and press the Enter key, or press the "**`RUN`**" button.  Note; some devices, such as the Rigol DG4162 Function/Arbitrary Waveform Generator make need to be set to "PC" mode in the I/O menu before they will respond to commands:
+
+#### Commands common to most instruments include:
 
  - **`*IDN?`** - Queries the equipment ID and returns a String of text info
  - **`*RST`**  - Resets the instrument
  
- Commands for the Rigol DM3058 Digital Multimeter include:
+#### Commands for the Rigol DM3058 Digital Multimeter include:
 
  - **`:MEASure:VOLTage:DC?`** - Measure DC Voltage
  - **`:MEASure:VOLTage:AC?`** - Measure AC Voltage
@@ -17,7 +19,7 @@ To use it, first select the device to command using the selector, type the comma
  - **`:MEASure:CURRent:AC?`** - Measure AC Current
  - **`:MEASure:RESistance?`** - Measure Resistance
  
-Commands for a Rigol DG4162 Function/Arbitrary Waveform Generator include:
+#### Commands for a Rigol DG4162 Function/Arbitrary Waveform Generator include:
  
   - **`:SOURce1:FREQuency:FIXed 888888`** - Set Channel 1 Frequency to 888.888 kHz
   - **`:OUTPut1:STATe ON`** - Channel 1 Output On

@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
+import static org.usb4java.LibUsb.ERROR_NOT_FOUND;
+
 /**
  *  Implements a bulk transfer I/O driver that uses usb4java to communicate with a USB Device
  *  using the Usb4Java Library.
@@ -18,7 +20,7 @@ class USBIO {
   private DeviceHandle      handle;
   private Context           context;
   private byte              iFace, outEnd, inEnd;
-  private int               maxPkt;
+  short                     maxPkt;
 
   USBIO (short vendorId, short productId) {
     context = new Context();
@@ -57,10 +59,10 @@ class USBIO {
                       if ((endAdd & 0x80) != 0) {
                         this.inEnd = endAdd;
                       } else {
+                        maxPkt = eDesc.wMaxPacketSize();
                         this.outEnd = endAdd;
                       }
                     }
-                    maxPkt = eDesc.wMaxPacketSize();
                   }
                 }
               }
@@ -82,12 +84,8 @@ class USBIO {
         }
       }
     }
-    throw new LibUsbException("Unable to open device", result);
-  }
-
-  private String getPrefix (String val) {
-    String[] vals = val.split(" ");
-    return vals[0];
+    close();
+    throw new LibUsbException("Unable to open selected device", ERROR_NOT_FOUND);
   }
 
   void send (byte[] data) {
@@ -101,7 +99,7 @@ class USBIO {
   }
 
   byte[] receive () {
-    ByteBuffer inBuf = ByteBuffer.allocateDirect(64).order(ByteOrder.LITTLE_ENDIAN);
+    ByteBuffer inBuf = ByteBuffer.allocateDirect(maxPkt).order(ByteOrder.LITTLE_ENDIAN);
     IntBuffer inNum = IntBuffer.allocate(1);                                // Used to get bytes read count
     int error;
     if ((error = LibUsb.bulkTransfer(handle, inEnd, inBuf, inNum, TIMEOUT)) >= 0) {
@@ -122,13 +120,19 @@ class USBIO {
 
   void close () {
     try {
-      int error = LibUsb.releaseInterface(handle, iFace);
-      if (error != LibUsb.SUCCESS) {
-        throw new LibUsbException("Unable to release interface", error);
+      if (handle != null) {
+        int error = LibUsb.releaseInterface(handle, iFace);
+        if (error != LibUsb.SUCCESS) {
+          throw new LibUsbException("Unable to release interface", error);
+        }
       }
     } finally {
-      LibUsb.close(handle);
-      LibUsb.exit(context);
+      if (handle != null) {
+        LibUsb.close(handle);
+      }
+      if (context != null) {
+        LibUsb.exit(context);
+      }
     }
   }
 }
