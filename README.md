@@ -8,21 +8,21 @@ To use RigolComm, first select the device to communicate with using the selector
 
 #### Commands common to most instruments include:
 
- - **`*IDN?`** - Queries the equipment ID and returns a String of text info
- - **`*RST`**  - Resets the instrument
+  - **`*IDN?`** - Queries the equipment ID and returns a String of text info
+  - **`*RST`**  - Resets the instrument
  
 #### Commands for the Rigol DM3058 Digital Multimeter include:
 
- - **`:FUNCtion:VOLTage:DC`** - Sets DM3058 to measure DC Voltage
- - **`:MEASure:VOLTage:DC?`** - Measure DC Voltage
- - **`:FUNCtion:VOLTage:AC`** - Sets DM3058 to measure AC Voltage
- - **`:MEASure:VOLTage:AC?`** - Measure AC Voltage
- - **`:FUNCtion:CURRent:DC`** - Sets DM3058 to measure DC Current
- - **`:MEASure:CURRent:DC?`** - Measure DC Current
- - **`:FUNCtion:CURRent:AC`** - Sets DM3058 to measure AC Current
- - **`:MEASure:CURRent:AC?`** - Measure AC Current
- - **`:FUNCtion:RESistance`** - Sets DM3058 to measure Resistance
- - **`:MEASure:RESistance?`** - Measure Resistance
+  - **`:FUNCtion:VOLTage:DC`** - Sets DM3058 to measure DC Voltage
+  - **`:MEASure:VOLTage:DC?`** - Measure DC Voltage
+  - **`:FUNCtion:VOLTage:AC`** - Sets DM3058 to measure AC Voltage
+  - **`:MEASure:VOLTage:AC?`** - Measure AC Voltage
+  - **`:FUNCtion:CURRent:DC`** - Sets DM3058 to measure DC Current
+  - **`:MEASure:CURRent:DC?`** - Measure DC Current
+  - **`:FUNCtion:CURRent:AC`** - Sets DM3058 to measure AC Current
+  - **`:MEASure:CURRent:AC?`** - Measure AC Current
+  - **`:FUNCtion:RESistance`** - Sets DM3058 to measure Resistance
+  - **`:MEASure:RESistance?`** - Measure Resistance
  
 Caution: be careful when using commends that switch measuring modes, such as issuing a **`:MEASure:CURRent:DC?`** command when the instrument is connected to a voltage source, as this can damage the instrument.  Also, using the **`MEASure`** command switch from one mode to another may result in a read timeout, as it takes time for the DM3058 to internally make the mode change.  So, it's better to first use a **`FUNCtion`** command t0 select the measurment mode before issuing a **`MEASure`** command.
 
@@ -39,14 +39,14 @@ Also, the portions of the commands shown in lower case letters are optional and 
   - **`:SOURce1:FUNCtion:SHAPe SINusoid`** - Set Channel 1 Output to Sinusoid
   - **`:SOURce1:FUNCtion:SHAPe RAMP`** - Set Channel 1 Output to Ramp (Triangle)
  
- Note: while I designed and tested RigolComm with devices made by Rigol Technologies, it might also work with other devices that support IEEE 488 Commands sent over the devices's USB interface.  However, at the moment, I have onlu tested it with the following devices:
+ Note: while I designed and tested RigolComm with devices made by Rigol Technologies, it might also work with other devices that support IEEE 488 Commands sent over the devices's USB interface.  However, at the moment, I have only done basic testing with the following Rigol devices:
  
-  - [Rigol **DM3058** Digital Multimeter](https://www.rigolna.com/products/digital-multimeters/dm3000/)
-  - [Rigol **DP832** Prog DC Power Supply](https://www.rigolna.com/products/dc-power-loads/dp800/)
-  - [Rigol **DS4024** Digital Oscilloscope](https://www.rigolna.com/products/digital-oscilloscopes/4000/)
-  - [Rigol **DS1102E** Digital Oscilloscope](https://www.rigolna.com/products/digital-oscilloscopes/1000/)
-  - [Rigol **DSA815** Spectrum Analyzer](https://www.rigolna.com/products/spectrum-analyzers/dsa800/)
-  - [Rigol **DG4162** Func/Wave Generator](https://www.rigolna.com/products/waveform-generators/dg4000/)
+  - [**DM3058** Digital Multimeter](https://www.rigolna.com/products/digital-multimeters/dm3000/)
+  - [**DP832** Prog DC Power Supply](https://www.rigolna.com/products/dc-power-loads/dp800/)
+  - [**DS4024** Digital Oscilloscope](https://www.rigolna.com/products/digital-oscilloscopes/4000/)
+  - [**DS1102E** Digital Oscilloscope](https://www.rigolna.com/products/digital-oscilloscopes/1000/)
+  - [**DSA815** Spectrum Analyzer](https://www.rigolna.com/products/spectrum-analyzers/dsa800/)
+  - [**DG4162** Func/Wave Generator](https://www.rigolna.com/products/waveform-generators/dg4000/)
   
 If you wish to use other devices, you will need to add them to the "devices" Map in RigolComm.java.  The utility program RigolScan.java (included in .jar file) can be used to scan for Rigol devices that are powered on and connected to the computer.  You can run it from the command line like this:
 
