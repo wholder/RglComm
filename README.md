@@ -48,12 +48,10 @@ Also, the portions of the commands shown in lower case letters are optional and 
   - [**DSA815** Spectrum Analyzer](https://www.rigolna.com/products/spectrum-analyzers/dsa800/)
   - [**DG4162** Func/Wave Generator](https://www.rigolna.com/products/waveform-generators/dg4000/)
   
-If you wish to use other devices, you will need to add them to the "devices" Map in RigolComm.java.  The utility program RigolScan.java (included in .jar file) can be used to scan for Rigol devices that are powered on and connected to the computer.  You can run it from the command line like this:
+If you wish to use other devices, you will need to add them to the "devices" Map in RigolComm.java.  The utility program RigolScan.java (included in .jar file) can be used to scan for Rigol devices that are powered on and connected to the computer.  You can type "**`scan`**" into the command text field and then press either the Enter key, or the "**`RUN`**" button.  Or, you can run it from the command line like this:
 
   **`java -cp RigolComm.jar RigolScan`**
- 
- Or, you can type "**`scan`**" into the command text field and then press either the Enter key, or the "**`RUN`**" button.
- 
+  
 ## Caution
 Be careful when using commends that switch measuring modes, such as issuing a **`:MEASure:CURRent:DC?`** command when the instrument is connected to a voltage source, as this can damage the instrument.
 
