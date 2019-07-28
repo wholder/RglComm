@@ -190,6 +190,7 @@ public class RigolComm extends JFrame {
     appendLine("Snd: " + cmd);
     usb.send(buf.toByteArray());
     if (cmd.contains("?")) {
+      delay(100);
       bTag++;
       int xferSize = (usb.maxPkt / 2) - 12;
       StringBuilder rec = new StringBuilder();

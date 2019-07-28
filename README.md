@@ -13,12 +13,21 @@ To use RigolComm, first select the device to communicate with using the selector
  
 #### Commands for the Rigol DM3058 Digital Multimeter include:
 
+ - **`:FUNCtion:VOLTage:DC`** - Sets DM3058 to measure DC Voltage
  - **`:MEASure:VOLTage:DC?`** - Measure DC Voltage
+ - **`:FUNCtion:VOLTage:AC`** - Sets DM3058 to measure AC Voltage
  - **`:MEASure:VOLTage:AC?`** - Measure AC Voltage
+ - **`:FUNCtion:CURRent:DC`** - Sets DM3058 to measure DC Current
  - **`:MEASure:CURRent:DC?`** - Measure DC Current
+ - **`:FUNCtion:CURRent:AC`** - Sets DM3058 to measure AC Current
  - **`:MEASure:CURRent:AC?`** - Measure AC Current
+ - **`:FUNCtion:RESistance`** - Sets DM3058 to measure Resistance
  - **`:MEASure:RESistance?`** - Measure Resistance
  
+Caution: be careful when using commends that switch measuring modes, such as issuing a **`:MEASure:CURRent:DC?`** command when the instrument is connected to a voltage source, as this can damage the instrument.  Also, using the **`MEASure`** command switch from one mode to another may result in a read timeout, as it takes time for the DM3058 to internally make the mode change.  So, it's better to first use a **`FUNCtion`** command t0 select the measurment mode before issuing a **`MEASure`** command.
+
+Also, the portions of the commands shown in lower case letters are optional and can be omitted.  So, for example, sending the command **`:FUNC:VOLT:DC`** is the same as sending the command **`:FUNCtion:VOLTage:DC`**.
+
 #### Commands for a Rigol DG4162 Function/Arbitrary Waveform Generator include:
  
   - **`:SOURce1:FREQuency:FIXed 888888`** - Set Channel 1 Frequency to 888.888 kHz
