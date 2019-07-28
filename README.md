@@ -2,7 +2,7 @@
 
 <p align="center"><img src="https://github.com/wholder/RigolComm/blob/master/images/RigolComm%20Screenshot.png"></p>
 
-**RigolComm** is a GUI-based program written in the Java Language that I created to experiment with communicating with and controlling Rigol devices using IEEE 488 Commands sent over the instument's USB interface.  My eventnual goal is to use this code as the basis for a program that can run simple scripts to make various measurements and perform calculations.  However, I'm publishing it here so that others can learn the basic techniques needed to use usb4java to communicate these kinds of devices.  The following is a list of example commands that can command a Rigol DM3058 Digital Multimeter to perform various checks and measurements:
+**RigolComm** is a GUI-based program written in the Java Language that I created to experiment with communicating with and controlling Rigol devices using IEEE 488 Commands sent over the instrument's USB interface.  My eventual goal is to use this code as the basis for a program that can run simple scripts to make various measurements and perform calculations.  However, I'm publishing it here so that others can learn the basic techniques needed to use usb4java to communicate these kinds of devices.  The following is a list of example commands that can command a Rigol DM3058 Digital Multimeter to perform various checks and measurements:
 
  - **`*IDN?`** - Queries the equipment ID.
  - **`*RST`**  - Resets the instrument
@@ -26,7 +26,7 @@ If you wish to use other devices, you will need to add them to the "devices" Map
   **`java -cp RigolComm.jar RigolScan`**
  
 ## Caution
-Be careful when usiing commends that switch modes, such as issuing a **`:MEASure:CURRent:DC?`** command when the instrument is connected to a voltage source, as this can damage the instrument.
+Be careful when using commends that switch modes, such as issuing a **`:MEASure:CURRent:DC?`** command when the instrument is connected to a voltage source, as this can damage the instrument.
 
 ### Requirements
 Java 8 JDK, or later must be installed in order to compile the code.  There is also a [**Runnable JAR file**](https://github.com/wholder/RigolComm/blob/master/out/artifacts/RigolComm_jar) included in the checked in code that you can download.   On a Mac, just double click the **`RigolComm.jar`** file and it should start.  However, you'll probably have to right click and select "Open" the  first time you run RigolComm due to new Mac OS X security checks.  You should also be able to run the JAR file on Windows or Linux systems, but you'll need to have a Java 8 JRE, or later installed and follow the appropriate process for each needed to run an executable JAR file.
