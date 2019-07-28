@@ -1,7 +1,7 @@
 import org.usb4java.*;
 
 class RigolScan {
-  private static String doScan () {
+  static String doScan () {
     StringBuilder buf = new StringBuilder();
     Context context = new Context();
     int result = LibUsb.init(context);

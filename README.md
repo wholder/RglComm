@@ -4,9 +4,9 @@
 
 **RigolComm** is a GUI-based program written in the Java Language that I created to experiment with communicating with and controlling Rigol devices using IEEE 488 Commands sent over the instrument's USB interface.  My eventual goal is to use this code as the basis for a program that can run simple scripts to make various measurements and perform calculations.  However, I'm publishing it here so that others can learn the basic techniques needed to use usb4java to communicate these kinds of devices.
 
-Commands common to most instruments include:
+To use it, first select the device to command using the selector, type the command into the text field and press the Enter key, or press the "RUN" button. Commands common to most instruments include:
 
- - **`*IDN?`** - Queries the equipment ID.
+ - **`*IDN?`** - Queries the equipment ID and returns a String of text info
  - **`*RST`**  - Resets the instrument
  
  Commands for the Rigol DM3058 Digital Multimeter include:
@@ -40,6 +40,8 @@ Commands for a Rigol DG4162 Function/Arbitrary Waveform Generator include:
 If you wish to use other devices, you will need to add them to the "devices" Map in RigolComm.java.  The utility program RigolScan.java (included in .jar file) can be used to scan for Rigol devices that are powered on and connected to the computer.  You can run it from the command line like this:
 
   **`java -cp RigolComm.jar RigolScan`**
+ 
+ Or, you can type "**`scan`**" into the command text field and then press the Enter key, or press the "**`RUN`**" button.
  
 ## Caution
 Be careful when using commends that switch measuring modes, such as issuing a **`:MEASure:CURRent:DC?`** command when the instrument is connected to a voltage source, as this can damage the instrument.

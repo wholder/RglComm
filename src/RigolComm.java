@@ -111,23 +111,27 @@ public class RigolComm extends JFrame {
   }
 
   private void doCommand () {
-    try {
-      Rigol sel = (Rigol) select.getSelectedItem();
-      if (sel == null)
-        return;
-      usb = new USBIO(sel.vend, sel.prod, sel.intFace, sel.outEnd, sel.inEnd);
-      String cmd = command.getText();
-      command.setText("");
-      String rsp = sendCmd(cmd);
-      if (rsp != null && rsp.length() > 0) {
-        appendLine("Rsp: " + rsp.trim());
-      }
-    } catch (Exception ex) {
-      appendLine(ex.getMessage());
-      ex.printStackTrace();
-    } finally {
-      if (usb != null) {
-        usb.close();
+    String cmd = command.getText();
+    if ("scan".equalsIgnoreCase(cmd)) {
+      appendLine(RigolScan.doScan());
+    } else {
+      try {
+        Rigol sel = (Rigol) select.getSelectedItem();
+        if (sel == null)
+          return;
+        usb = new USBIO(sel.vend, sel.prod, sel.intFace, sel.outEnd, sel.inEnd);
+        command.setText("");
+        String rsp = sendCmd(cmd);
+        if (rsp != null && rsp.length() > 0) {
+          appendLine("Rsp: " + rsp.trim());
+        }
+      } catch (Exception ex) {
+        appendLine(ex.getMessage());
+        ex.printStackTrace();
+      } finally {
+        if (usb != null) {
+          usb.close();
+        }
       }
     }
   } 
@@ -138,6 +142,7 @@ public class RigolComm extends JFrame {
     text.setRows(20);
     text.setFont(new Font("Monaco", Font.PLAIN, 12));
     text.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    text.setEditable(false);
     JScrollPane scroll = new JScrollPane(text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     add(scroll, BorderLayout.CENTER);
     JPanel controls = new JPanel(new FlowLayout());
