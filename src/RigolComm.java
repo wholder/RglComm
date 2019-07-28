@@ -117,7 +117,7 @@ public class RigolComm extends JFrame {
         return;
       usb = new USBIO(sel.vend, sel.prod, sel.intFace, sel.outEnd, sel.inEnd);
       String cmd = command.getText();
-      //command.setText("");
+      command.setText("");
       String rsp = sendCmd(cmd);
       if (rsp != null && rsp.length() > 0) {
         appendLine("Rsp: " + rsp.trim());
