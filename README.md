@@ -16,6 +16,10 @@
  
   - Rigol DM3058 Digital Multimeter
   - DP832 Prog DC Power Supply
+  - DS4024 Digital Oscilloscope
+  - DS1102E Digital Oscilloscope
+  - DSA815 Spectrum Analyzer
+  - DG4162 Func/Wave Generator
   
 If you wish to use other devices, you will need to add them to the "devices" Map in RigolComm.java.  The utility program RigolScan.java (included in .jar file) can be used to scan for Rigol devices that are powered on and connected to the computer.  You can run it from the command line like this:
 

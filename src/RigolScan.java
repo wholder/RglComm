@@ -18,29 +18,26 @@ class RigolScan {
       for (Device device : list) {
         int address = LibUsb.getDeviceAddress(device);
         int busNumber = LibUsb.getBusNumber(device);
-        DeviceDescriptor descriptor = new DeviceDescriptor();
-        result = LibUsb.getDeviceDescriptor(device, descriptor);
-        byte numConfigs = descriptor.bNumConfigurations();
+        DeviceDescriptor desc = new DeviceDescriptor();
+        result = LibUsb.getDeviceDescriptor(device, desc);
+        byte numConfigs = desc.bNumConfigurations();
         if (result < 0) {
           throw new LibUsbException("Unable to read device descriptor", result);
         }
-        String usbClass = DescriptorUtils.getUSBClassName(descriptor.bDeviceClass());
-        short vendor = descriptor.idVendor();
-        if (!"hub".equalsIgnoreCase(usbClass) && vendor == (short) 0x1AB1) {
+        String usbClass = DescriptorUtils.getUSBClassName(desc.bDeviceClass());
+        short vend = desc.idVendor();
+        short prod = desc.idProduct();
+        if (!"hub".equalsIgnoreCase(usbClass) && vend == (short) 0x1AB1) {
           deviceFound = true;
-          buf.append(String.format("Bus: %03d Device 0x%03d: Vendor 0x%04X, Product %04X%n",
-                                   busNumber, address, vendor, descriptor.idProduct()));
+          buf.append(String.format("\nVendor 0x%04X, Product 0x%04X%n", vend, prod));
           DeviceHandle handle = new DeviceHandle();
           if (LibUsb.open(device, handle) >= 0) {
-            String sManufacturer = LibUsb.getStringDescriptor(handle, descriptor.iManufacturer());
-            String sProduct = LibUsb.getStringDescriptor(handle, descriptor.iProduct());
-            String sSerialNumber = LibUsb.getStringDescriptor(handle, descriptor.iSerialNumber());
             buf.append("Manufacturer: ");
-            buf.append(sManufacturer);
+            buf.append(LibUsb.getStringDescriptor(handle, desc.iManufacturer()));
             buf.append("\nProduct:      ");
-            buf.append(sProduct);
+            buf.append(LibUsb.getStringDescriptor(handle, desc.iProduct()));
             buf.append("\nSerialNumber: ");
-            buf.append(sSerialNumber);
+            buf.append(LibUsb.getStringDescriptor(handle, desc.iSerialNumber()));
             buf.append("\n");
             LibUsb.close(handle);
           }
