@@ -2,7 +2,7 @@
   <artifact type="jar" build-on-make="true" name="RigolComm:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/RigolComm_jar</output-path>
     <root id="archive" name="RigolComm.jar">
-      <element id="module-output" name="RigolComm" />
+      <element id="module-output" name="RglComm" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/usb4java-1.3.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/commons-lang3-3.8.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/libusb4java-1.3.0-linux-arm.jar" path-in-jar="/" />

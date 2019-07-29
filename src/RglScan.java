@@ -1,6 +1,6 @@
 import org.usb4java.*;
 
-class RigolScan {
+class RglScan {
   static String doScan () {
     StringBuilder buf = new StringBuilder();
     Context context = new Context();

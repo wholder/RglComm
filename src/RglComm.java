@@ -16,7 +16,7 @@ import java.util.prefs.Preferences;
  *  License: MIT (https://opensource.org/licenses/MIT)
  */
 
-public class RigolComm extends JFrame {
+public class RglComm extends JFrame {
   private transient Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
   private transient boolean     running;
   private static List<Rigol>    devices = new LinkedList<>();
@@ -78,14 +78,14 @@ public class RigolComm extends JFrame {
   }
 
   public static void main (String[] args) {
-    new RigolComm();
+    new RglComm();
   }
 
   private void doCommand () {
     running = true;
     String cmd = command.getText();
     if ("scan".equalsIgnoreCase(cmd)) {
-      appendLine(RigolScan.doScan());
+      appendLine(RglScan.doScan());
     } else {
       try {
         Rigol sel = (Rigol) select.getSelectedItem();
@@ -109,8 +109,8 @@ public class RigolComm extends JFrame {
     }
   } 
 
-  private RigolComm () {
-    super("RigolComm");
+  private RglComm () {
+    super("RglComm");
     text.setColumns(30);
     text.setRows(20);
     text.setFont(new Font("Monaco", Font.PLAIN, 12));

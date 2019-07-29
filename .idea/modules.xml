@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/RigolComm.iml" filepath="$PROJECT_DIR$/RigolComm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RglComm.iml" filepath="$PROJECT_DIR$/RglComm.iml" />
     </modules>
   </component>
 </project>
