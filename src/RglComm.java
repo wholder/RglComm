@@ -74,7 +74,8 @@ public class RglComm extends JFrame {
     devices.add(new Rigol("DS4024 Digital Oscilloscope",  0x1AB1, 0x04B1));
     devices.add(new Rigol("DS1102E Digital Oscilloscope", 0x1AB1, 0x0588));
     devices.add(new Rigol("DSA815 Spectrum Analyzer",     0x1AB1, 0x0960));
-    devices.add(new Rigol("DG4162 Func/Wave Generator",   0x1AB1, 0x0641));
+    devices.add(new Rigol("DG4162 Func/Wave Generator",   0x1AB1, 0x0641)); // Sometimes shows as PID 0x0588
+    devices.add(new Rigol("DS1054Z Digital Oscilloscope", 0x1AB1, 0x04CE)); // Not verified
   }
 
   public static void main (String[] args) {
@@ -92,7 +93,7 @@ public class RglComm extends JFrame {
         if (sel == null)
           return;
         usb = new USBIO(sel.vend, sel.prod);
-        command.setText("");
+        //command.setText("");
         String rsp = sendCmd(cmd);
         if (rsp != null && rsp.length() > 0) {
           appendLine("Rsp: " + rsp.trim());
@@ -192,7 +193,7 @@ public class RglComm extends JFrame {
     if (cmd.contains("?")) {
       delay(100);
       bTag++;
-      int xferSize = (usb.maxPkt / 2) - 12;
+      int xferSize = usb.maxPkt - 4 - 12;
       StringBuilder rec = new StringBuilder();
       buf.reset();
       buf.write(2);               //  0: MsgID
@@ -208,11 +209,13 @@ public class RglComm extends JFrame {
       buf.write(0x00);            // 10: Reserved(0x00)
       buf.write(0x00);            // 11: Reserved(0x00)
       byte[] data;
+      int total = 0;
       do {
         usb.send(buf.toByteArray());
         // delay(50);
         data = usb.receive();
         int size = ((int) data[4] & 0xFF) + (((int) data[5] & 0xFF) << 8);
+        total += size;
         for (int ii = 0; ii < size; ii++) {
           rec.append((char) data[12 + ii]);
         }

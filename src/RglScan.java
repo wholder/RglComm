@@ -16,8 +16,6 @@ class RglScan {
     try {
       boolean deviceFound = false;
       for (Device device : list) {
-        int address = LibUsb.getDeviceAddress(device);
-        int busNumber = LibUsb.getBusNumber(device);
         DeviceDescriptor desc = new DeviceDescriptor();
         result = LibUsb.getDeviceDescriptor(device, desc);
         if (result < 0) {

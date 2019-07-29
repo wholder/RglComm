@@ -21,10 +21,12 @@ class USBIO {
   private Context           context;
   private byte              iFace, outEnd, inEnd;
   short                     maxPkt;
+  private boolean           handleOpen, contextOpen, interfaceOpen;
 
   USBIO (short vendorId, short productId) {
     context = new Context();
     int result = LibUsb.init(context);
+    contextOpen = true;
     if (result < 0) {
       throw new LibUsbException("Unable to initialize libusb", result);
     }
@@ -38,29 +40,31 @@ class USBIO {
       String usbClass = DescriptorUtils.getUSBClassName(desc.bDeviceClass());
       short vend = desc.idVendor();
       short prod = desc.idProduct();
-      if (!"hub".equalsIgnoreCase(usbClass) && vend == vendorId && prod == productId) {
-        handle = new DeviceHandle();
-        byte numConfigs = desc.bNumConfigurations();
-        for (byte ii = 0; ii < numConfigs; ii++) {
-          ConfigDescriptor cDesc = new ConfigDescriptor();
-          if (LibUsb.getConfigDescriptor(device, ii, cDesc) >= 0) {
-            Interface[] ifaces = cDesc.iface();
-            for (Interface iface : ifaces) {
-              InterfaceDescriptor[] iDescs = iface.altsetting();
-              for (InterfaceDescriptor iDesc : iDescs) {
-                this.iFace = iDesc.bInterfaceNumber();
-                byte numEndpoints = iDesc.bNumEndpoints();
-                if (numEndpoints > 0) {
-                  EndpointDescriptor[] eDescs = iDesc.endpoint();
-                  for (EndpointDescriptor eDesc : eDescs) {
-                    byte endAdd = eDesc.bEndpointAddress();
-                    byte eAttr = eDesc.bmAttributes();
-                    if ((eAttr & 0x03) == 2) {
-                      if ((endAdd & 0x80) != 0) {
-                        this.inEnd = endAdd;
-                      } else {
-                        maxPkt = eDesc.wMaxPacketSize();
-                        this.outEnd = endAdd;
+      if (!"hub".equalsIgnoreCase(usbClass) && vend == vendorId) {
+        if (prod == productId) {
+          handle = new DeviceHandle();
+          byte numConfigs = desc.bNumConfigurations();
+          for (byte ii = 0; ii < numConfigs; ii++) {
+            ConfigDescriptor cDesc = new ConfigDescriptor();
+            if (LibUsb.getConfigDescriptor(device, ii, cDesc) >= 0) {
+              Interface[] ifaces = cDesc.iface();
+              for (Interface iface : ifaces) {
+                InterfaceDescriptor[] iDescs = iface.altsetting();
+                for (InterfaceDescriptor iDesc : iDescs) {
+                  this.iFace = iDesc.bInterfaceNumber();
+                  byte numEndpoints = iDesc.bNumEndpoints();
+                  if (numEndpoints > 0) {
+                    EndpointDescriptor[] eDescs = iDesc.endpoint();
+                    for (EndpointDescriptor eDesc : eDescs) {
+                      byte endAdd = eDesc.bEndpointAddress();
+                      byte eAttr = eDesc.bmAttributes();
+                      if ((eAttr & 0x03) == 2) {
+                        if ((endAdd & 0x80) != 0) {
+                          this.inEnd = endAdd;
+                        } else {
+                          maxPkt = eDesc.wMaxPacketSize();
+                          this.outEnd = endAdd;
+                        }
                       }
                     }
                   }
@@ -68,24 +72,31 @@ class USBIO {
               }
             }
           }
-        }
-        if ((result = LibUsb.open(device, handle)) >= 0) {
-          if ((result = LibUsb.claimInterface(handle, iFace)) == LibUsb.SUCCESS) {
-            return;
-          } else {
-            if (LibUsb.detachKernelDriver(handle, iFace) == LibUsb.SUCCESS) {
-              if ((result = LibUsb.claimInterface(handle, iFace)) == LibUsb.SUCCESS) {
-                return;
+          if ((result = LibUsb.open(device, handle)) >= 0) {
+            handleOpen = true;
+            if ((result = LibUsb.claimInterface(handle, iFace)) == LibUsb.SUCCESS) {
+              interfaceOpen = true;
+              return;
+            } else {
+              if (LibUsb.detachKernelDriver(handle, iFace) == LibUsb.SUCCESS) {
+                if ((result = LibUsb.claimInterface(handle, iFace)) == LibUsb.SUCCESS) {
+                  interfaceOpen = true;
+                  return;
+                }
+                throw new LibUsbException("Unable to claim interface", result);
               }
-              throw new LibUsbException("Unable to claim interface", result);
             }
+            LibUsb.close(handle);
+            handleOpen = false;
           }
-          LibUsb.close(handle);
         }
       }
     }
-    close();
-    throw new LibUsbException("Unable to open selected device", ERROR_NOT_FOUND);
+    if (contextOpen) {
+      LibUsb.exit(context);
+      contextOpen = false;
+    }
+    throw new LibUsbException("Unable to open selected device", result < 0 ? result : ERROR_NOT_FOUND);
   }
 
   void send (byte[] data) {
@@ -120,18 +131,20 @@ class USBIO {
 
   void close () {
     try {
-      if (handle != null) {
+      if (interfaceOpen && handleOpen) {
         int error = LibUsb.releaseInterface(handle, iFace);
         if (error != LibUsb.SUCCESS) {
           throw new LibUsbException("Unable to release interface", error);
         }
       }
     } finally {
-      if (handle != null) {
+      if (handleOpen) {
         LibUsb.close(handle);
+        handleOpen = false;
       }
-      if (context != null) {
+      if (contextOpen) {
         LibUsb.exit(context);
+        contextOpen = false;
       }
     }
   }
