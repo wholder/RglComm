@@ -74,7 +74,7 @@ public class RglComm extends JFrame {
     devices.add(new Rigol("DS4024 Digital Oscilloscope",  0x1AB1, 0x04B1));
     devices.add(new Rigol("DS1102E Digital Oscilloscope", 0x1AB1, 0x0588));
     devices.add(new Rigol("DSA815 Spectrum Analyzer",     0x1AB1, 0x0960));
-    devices.add(new Rigol("DG4162 Func/Wave Generator",   0x1AB1, 0x0641)); // Sometimes shows as PID 0x0588
+    devices.add(new Rigol("DG4162 Func/Wave Generator",   0x1AB1, 0x0641)); // Shows as PID 0x0588 in "Printer" mode
     devices.add(new Rigol("DS1054Z Digital Oscilloscope", 0x1AB1, 0x04CE)); // Not verified
   }
 
@@ -93,7 +93,7 @@ public class RglComm extends JFrame {
         if (sel == null)
           return;
         usb = new USBIO(sel.vend, sel.prod);
-        //command.setText("");
+        command.setText("");
         String rsp = sendCmd(cmd);
         if (rsp != null && rsp.length() > 0) {
           appendLine("Rsp: " + rsp.trim());
@@ -167,33 +167,40 @@ public class RglComm extends JFrame {
   }
 
   private String sendCmd (String cmd) {
-    bTag++;
-    ByteArrayOutputStream buf = new ByteArrayOutputStream();
-    buf.write(1);             //  0: MsgID
-    buf.write(bTag);          //  1: bTag
-    buf.write(bTag ^ 0xFF);   //  2: bTagInverse
-    buf.write(0x00);          //  3: Reserved
-    buf.write(cmd.length());  //  4: TransferSize
-    buf.write(0x00);          //  5: TransferSize
-    buf.write(0x00);          //  6: TransferSize
-    buf.write(0x00);          //  7: TransferSize
-    buf.write(0x01);          //  8: bmTransfer Attributes (EOM is set)
-    buf.write(0x00);          //  9: Reserved(0x00)
-    buf.write(0x00);          // 10: Reserved(0x00)
-    buf.write(0x00);          // 11: Reserved(0x00)
-    for (int ii = 0; ii < cmd.length(); ii++) {
-      buf.write(cmd.charAt(ii));
-    }
-    buf.write('\n');
-    while ((buf.size() & 0x03) != 0) {
-      buf.write(0x00);        // Padding
-    }
     appendLine("Snd: " + cmd);
-    usb.send(buf.toByteArray());
+    int sendSize = usb.maxPkt - 12;
+    ByteArrayOutputStream buf = new ByteArrayOutputStream();
+    for (int idx = 0; idx < cmd.length(); idx += sendSize) {
+      buf.reset();
+      int pktSize = Math.min(sendSize, cmd.length() - idx);
+      byte term = (byte) (idx + sendSize >= cmd.length() ? 0x01 : 0x00);
+      bTag++;
+      buf.write(1);               //  0: MsgID
+      buf.write(bTag);            //  1: bTag
+      buf.write(bTag ^ 0xFF);     //  2: bTagInverse
+      buf.write(0x00);            //  3: Reserved
+      buf.write(pktSize & 0xFF);  //  4: TransferSize
+      buf.write(pktSize >> 8);    //  5: TransferSize
+      buf.write(0x00);            //  6: TransferSize
+      buf.write(0x00);            //  7: TransferSize
+      buf.write(term);            //  8: bmTransfer Attributes (EOM is set on last packet)
+      buf.write(0x00);            //  9: Reserved(0x00)
+      buf.write(0x00);            // 10: Reserved(0x00)
+      buf.write(0x00);            // 11: Reserved(0x00)
+      for (int ii = 0; ii < pktSize; ii++) {
+        buf.write(cmd.charAt(idx + ii));
+        System.out.print(cmd.charAt(idx + ii));
+      }
+      while ((buf.size() & 0x03) != 0) {
+        buf.write(0x00);          // Pad to multiple of 4
+      }
+      usb.send(buf.toByteArray());
+    }
+    System.out.println();
     if (cmd.contains("?")) {
       delay(100);
       bTag++;
-      int xferSize = usb.maxPkt - 4 - 12;
+      int xferSize = 32 - 12;
       StringBuilder rec = new StringBuilder();
       buf.reset();
       buf.write(2);               //  0: MsgID
@@ -204,18 +211,16 @@ public class RglComm extends JFrame {
       buf.write(xferSize >> 8);   //  5: TransferSize
       buf.write(0x00);            //  6: TransferSize
       buf.write(0x00);            //  7: TransferSize
-      buf.write(0x00);            //  8: bmTransfer Attributes (EOM is set)
+      buf.write(0x00);            //  8: bmTransfer Attributes
       buf.write(0x00);            //  9: Reserved(0x00)
       buf.write(0x00);            // 10: Reserved(0x00)
       buf.write(0x00);            // 11: Reserved(0x00)
       byte[] data;
-      int total = 0;
       do {
         usb.send(buf.toByteArray());
         // delay(50);
         data = usb.receive();
         int size = ((int) data[4] & 0xFF) + (((int) data[5] & 0xFF) << 8);
-        total += size;
         for (int ii = 0; ii < size; ii++) {
           rec.append((char) data[12 + ii]);
         }
