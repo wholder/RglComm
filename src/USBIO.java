@@ -92,10 +92,7 @@ class USBIO {
         }
       }
     }
-    if (contextOpen) {
-      LibUsb.exit(context);
-      contextOpen = false;
-    }
+    LibUsb.exit(context);
     throw new LibUsbException("Unable to open selected device", result < 0 ? result : ERROR_NOT_FOUND);
   }
 
