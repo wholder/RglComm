@@ -44,6 +44,16 @@ Also, the portions of the commands shown in lower case letters are optional and 
  
  #### Commands for a Rigol DS4024 Digital Oscilloscope include:
  
+  - **`:CHANnel1:COUPling?`** - Query coupling mode of Channel 1 (AC,DC,GND)
+  - **`:CHANnel1:COUPling AC`** - Set coupling mode of Channel to AC
+  - **`:CHANnel1:DISPlay?`** - Query display state of Channel 1 (1 = On, 0 = Off)
+  - **`:CHANnel1:DISPlay 1`** - Enable display of Channel 1 
+  - **`:CHANnel1:OFFSet?`** - Query vertical position of Channel 1
+  - **`:CHANnel1:OFFSet -0.3`** - Set vertical position of Channel 1 to -300mV
+  - **`:CHANnel1:SCALe?`** - Query vertical scale of Channel 1
+  - **`:CHANnel1:SCALe 0.5`** - Set vertical scale of Channel 1 to 500mV
+  - **`:TIMebase:SCALe?`** - Query Timebase Scale
+  - **`:TIMebase:SCALe 0.00001`** - Set Timebase Scale to 10uS
   - **`:DISPlay:DATA?`** - Download and display Screen image from DS4024 (see below)
   
   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DS4024%20Capture.png" width="50%" height="50%"></p>
