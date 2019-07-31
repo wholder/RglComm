@@ -108,7 +108,7 @@ public class RglComm extends JFrame {
           }
         }
       } catch (Exception ex) {
-        appendLine(ex.getMessage());
+        appendLine("Err: " + ex.toString());
         ex.printStackTrace();
       } finally {
         if (usb != null) {
@@ -179,7 +179,7 @@ public class RglComm extends JFrame {
     appendLine("Snd: " + cmd);
     cmd += '\n';
     //System.out.print("Block Size: " + usb.maxPkt);
-    // Note: making blockSize larger than 32 breaks communication with some devices
+    // Note: making blockSize larger than 128 breaks communication with some devices
     int blockSize = Math.min(usb.maxPkt, 128);
     ByteArrayOutputStream buf = new ByteArrayOutputStream();
     for (int idx = 0; idx < cmd.length(); idx += blockSize) {
