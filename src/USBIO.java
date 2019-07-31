@@ -108,21 +108,25 @@ class USBIO {
 
   byte[] receive () {
     ByteBuffer inBuf = ByteBuffer.allocateDirect(maxPkt).order(ByteOrder.LITTLE_ENDIAN);
-    IntBuffer inNum = IntBuffer.allocate(1);                                // Used to get bytes read count
+    IntBuffer inNum = IntBuffer.allocate(2);                                // Used to get bytes read count
     int error;
-    if ((error = LibUsb.bulkTransfer(handle, inEnd, inBuf, inNum, TIMEOUT)) >= 0) {
-      if (inBuf.hasArray()) {
-        return inBuf.array();
-      } else {
-        int cnt = inNum.get(0);
-        byte[] data = new byte[cnt];
-        for (int ii = 0; ii < cnt; ii++) {
-          data[ii] = inBuf.get();
+    int retry = 3;
+    do {
+      if ((error = LibUsb.bulkTransfer(handle, inEnd, inBuf, inNum, TIMEOUT)) >= 0) {
+        if (inBuf.hasArray()) {
+          return inBuf.array();
+        } else {
+          int cnt = ((int) inNum.get(0) & 0xFF) + (inNum.get(1) << 8) + 12;
+          int cap = inBuf.capacity();
+          byte[] data = new byte[cnt];
+          for (int ii = 0; ii < cnt && ii < cap; ii++) {
+            data[ii] = inBuf.get();
+          }
+          inBuf.clear();
+          return data;
         }
-        inBuf.clear();
-        return data;
       }
-    }
+    } while (error == -7 && --retry > 0);
     throw new LibUsbException("Unable to receive data", error);
   }
 
