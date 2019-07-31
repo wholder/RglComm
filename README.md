@@ -15,6 +15,7 @@ To use RglComm, first select the device to communicate with using the selector, 
 #### Commands common to most instruments include:
 
   - **`*IDN?`** - Queries the equipment ID and returns a String of text info
+  - **`*CLS`** - Clear Status Register
   - **`*RST`**  - Resets the instrument to factory defined condition
   - **`*TST?`** - Run self tests (0 = passed, 1 = failed)
   - **`*WAI`** - Waits until all pending commands are completed, before executing any other commands
