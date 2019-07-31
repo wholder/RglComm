@@ -47,7 +47,7 @@ Note: the portions of the commands shown in lower case letters are optional and 
   - **`:SOURce1:FUNCtion:SHAPe RAMP`** - Set Channel 1 Output to Ramp (Triangle)
   - **`:HCOPy:SDUMp:DATA?`** - Download and display Screen image from DG4162 (see below)
  
-   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DG4162%20Capture.png" width="60%" height="60%"></p>
+   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DG4162%20Capture.png" width="50%" height="50%"></p>
 
  #### Commands for a Rigol DS4024 Digital Oscilloscope include:
  
@@ -63,7 +63,7 @@ Note: the portions of the commands shown in lower case letters are optional and 
   - **`:TIMebase:SCALe 0.00001`** - Set Timebase Scale to 10uS
   - **`:DISPlay:DATA?`** - Download and display Screen image from DS4024 (see below)
   
-  <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DS4024%20Capture.png" width="50%" height="50%"></p>
+  <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DS4024%20Capture.png" width="60%" height="60%"></p>
 
 #### Supported Devices
 
