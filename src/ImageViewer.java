@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.util.prefs.Preferences;
 
 class ImageViewer extends JFrame {
   static class Surface extends JPanel {
@@ -22,7 +23,7 @@ class ImageViewer extends JFrame {
     }
   }
 
-  ImageViewer (byte[] data) throws Exception {
+  ImageViewer (Preferences prefs, byte[] data) throws Exception {
     setTitle("ImageViewer");
     ByteArrayInputStream bis = new ByteArrayInputStream(data);
     BufferedImage img = ImageIO.read(bis);
@@ -35,11 +36,16 @@ class ImageViewer extends JFrame {
     menu.add(save);
     save.addActionListener(ev -> {
       JFileChooser chooser = new JFileChooser();
+      String fileDir = prefs.get("file.dir", null);
+      if (fileDir != null) {
+        chooser.setCurrentDirectory(new File(fileDir));
+      }
       chooser.setDialogType(JFileChooser.SAVE_DIALOG);
       chooser.setSelectedFile(new File("screen.png"));
       chooser.setFileFilter(new FileNameExtensionFilter("png file","png"));
       if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
         File file = chooser.getSelectedFile();
+        prefs.put("file.dir", chooser.getCurrentDirectory().toString());
         try {
           ImageIO.write(img, "png", file);
         } catch (Exception ex) {

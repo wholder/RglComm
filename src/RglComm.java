@@ -100,7 +100,7 @@ public class RglComm extends JFrame {
             appendLine("Rsp: bitmap received");
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bos.write(rsp, 11, rsp.length - 11);
-            new ImageViewer(bos.toByteArray());
+            new ImageViewer(prefs, bos.toByteArray());
           } else {
             if (rsp.length > 0) {
               appendLine("Rsp: " + new String(rsp).trim());
