@@ -37,10 +37,17 @@ Also, the portions of the commands shown in lower case letters are optional and 
   - **`:OUTPut1:STATe OFF`** - Channel 1 Output Off
   - **`:SOURce1:VOLTage?`** - Read Channel 1 Amplitude in Volts (pp)
   - **`:SOURce1:VOLTage 2.25`** - Channel 1 Amplitude to 2.25 Volts
+  - **`:SOURce1:FUNCtion:SHAPe?`** - Read Selected Waveform Shape of Channel 1
   - **`:SOURce1:FUNCtion:SHAPe SQUare`** - Set Channel 1 Output to Square Wave
   - **`:SOURce1:FUNCtion:SHAPe SINusoid`** - Set Channel 1 Output to Sinusoid
   - **`:SOURce1:FUNCtion:SHAPe RAMP`** - Set Channel 1 Output to Ramp (Triangle)
  
+ #### Commands for a Rigol DS4024 Digital Oscilloscope include:
+ 
+  - **`:DISPlay:DATA?`** - Download and display Screen image from DS4024 (see below)
+  
+  <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DS4024%20Capture.png" width="50%" height="50%"></p>
+
  Note: while I designed and tested RglComm with devices made by Rigol Technologies, it might also work with other devices that support IEEE 488 Commands sent over the devices's USB interface.  However, at the moment, I have only done basic testing with the following Rigol devices:
  
   - [**DM3058** Digital Multimeter](https://www.rigolna.com/products/digital-multimeters/dm3000/)
