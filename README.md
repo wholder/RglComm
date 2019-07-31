@@ -2,14 +2,15 @@
 
 <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/RglComm%20Screenshot.png"></p>
 
-**RglComm** is a GUI-based program written in the Java Language that I created to experiment with communicating with and controlling Rigol™ devices using IEEE 488 Commands [USBTMC-USB488](http://sdpha2.ucsd.edu/Lab_Equip_Manuals/usbtmc_usb488_subclass_1_00.pdf) sent over the instrument's USB interface.  My eventual goal is to use this code as the basis for a program that can run simple scripts to make various measurements and perform calculations (sort of a poor man's LabVIEW™), so stay tuned if you're interested.  However, I'm publishing it here so that others can learn the basic techniques needed to use usb4java to communicate these kinds of devices.  My implementation of the USBTMC-USB488 protocol is just enough to enable RglComm to send commands and receive reponses and does not implement all the details of the full specification.
+**RglComm** is a GUI-based program written in the Java Language that I created to experiment with communicating with and controlling Rigol™ devices using IEEE 488 Commands [USBTMC-USB488](http://sdpha2.ucsd.edu/Lab_Equip_Manuals/usbtmc_usb488_subclass_1_00.pdf) sent over the instrument's USB interface.  My eventual goal is to use this code as the basis for a program that can run simple scripts to make various measurements and perform calculations (sort of a poor man's LabVIEW™), so stay tuned if you're interested.  However, I'm publishing it here so that others can learn the basic techniques needed to use usb4java to communicate these kinds of devices.  My implementation of the USBTMC-USB488 protocol is just enough to enable RglComm to send commands and receive responses and does not implement all the details of the full specification.
 
 To use RglComm, first select the device to communicate with using the selector, then type the command into the text field and press the Enter key, or press the "**`RUN`**" button.  Note; some devices, such as the Rigol DG4162 Function/Arbitrary Waveform Generator make need to be set to "PC" mode in the I/O menu before they will respond to commands:
 
 #### Precautions
   - Be careful when using commends that switch measuring modes, such as issuing a **`:MEASure:CURRent:DC?`** command when the instrument is connected to a voltage source, as this can damage the instrument.
-  - Using the **`MEASure`** command switch from one mode to another can sometimes result in a read timeout, as it takes time for the DM3058 to internally make the mode change.  So, it's better to first use a **`FUNCtion`** command t0 select the measurment mode before issuing a **`MEASure`** command.
+  - Using the **`MEASure`** command switch from one mode to another can sometimes result in a read timeout, as it takes time for the DM3058 to internally make the mode change.  So, it's better to first use a **`FUNCtion`** command t0 select the measurement mode before issuing a **`MEASure`** command.
   - Try to connect all instruments directly to the host computer, as adding intermediate USB hubs can interfere with communication and cause timeout errors.
+  - Make sure the device's USB I/O Mode is set to '**`PC`**' and not to '**`Printer`**' as it's not possible to communicate with the device when set to Printer Mode.
 
 #### Commands common to most instruments include:
 
