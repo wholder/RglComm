@@ -58,6 +58,8 @@ Also, the portions of the commands shown in lower case letters are optional and 
   
   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DS4024%20Capture.png" width="50%" height="50%"></p>
 
+#### Supported Devices
+
  Note: while I designed and tested RglComm with devices made by Rigol Technologies, it might also work with other devices that support IEEE 488 Commands sent over the devices's USB interface.  However, at the moment, I have only done basic testing with the following Rigol devices:
  
   - [**DM3058** Digital Multimeter](https://www.rigolna.com/products/digital-multimeters/dm3000/)
