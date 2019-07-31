@@ -63,7 +63,7 @@ Note: the portions of the commands shown in lower case letters are optional and 
   - **`:TIMebase:SCALe 0.00001`** - Set Timebase Scale to 10uS
   - **`:DISPlay:DATA?`** - Download and display Screen image from DS4024 (see below)
   
-  <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DS4024%20Capture.png" width="60%" height="60%"></p>
+  <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DS4024%20Capture.png" width="55%" height="55%"></p>
 
 #### Supported Devices
 
