@@ -45,7 +45,10 @@ Note: the portions of the commands shown in lower case letters are optional and 
   - **`:SOURce1:FUNCtion:SHAPe SQUare`** - Set Channel 1 Output to Square Wave
   - **`:SOURce1:FUNCtion:SHAPe SINusoid`** - Set Channel 1 Output to Sinusoid
   - **`:SOURce1:FUNCtion:SHAPe RAMP`** - Set Channel 1 Output to Ramp (Triangle)
+  - **`:HCOPy:SDUMp:DATA?`** - Download and display Screen image from DG4162 (see below)
  
+   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DG4162%20Capture.png" width="50%" height="50%"></p>
+
  #### Commands for a Rigol DS4024 Digital Oscilloscope include:
  
   - **`:CHANnel1:COUPling?`** - Query coupling mode of Channel 1 (AC,DC,GND)

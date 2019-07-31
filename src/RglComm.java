@@ -5,6 +5,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -90,20 +91,31 @@ public class RglComm extends JFrame {
       running = true;
       try {
         Rigol sel = (Rigol) select.getSelectedItem();
-        if (sel == null)
+        if (sel == null) {
           return;
+        }
         usb = new USBIO(sel.vend, sel.prod);
         command.setText("");
-        byte[] rsp = sendCmd(cmd);
-        if (rsp != null) {
-          if (rsp.length > 12 && rsp[0] == '#' && rsp[11] == 'B' && rsp[12] == 'M') {
-            appendLine("Rsp: bitmap received");
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bos.write(rsp, 11, rsp.length - 11);
-            new ImageViewer(prefs, bos.toByteArray());
-          } else {
-            if (rsp.length > 0) {
-              appendLine("Rsp: " + new String(rsp).trim());
+        String[] parts = cmd.split(";");
+        for (String part : parts) {
+          byte[] rsp = sendCmd(part);
+          if (rsp != null) {
+            if (isDataBlock(rsp)) {
+              String prefix = new String(Arrays.copyOf(rsp, 11));
+              byte[] body = Arrays.copyOfRange(rsp, 11, rsp.length);
+              if (body[0] == 'B' && body[1] == 'M') {
+                // :DISPlay:DATA?
+                appendLine("Rsp: bitmap received: " + prefix);
+                new ImageViewer(prefs, body);
+              } else if (body[0] == (byte) 0xFF && body[1] == (byte) 0xD8) {
+                // :HCOPy:SDUMp:DATA?
+                appendLine("Rsp: data block received: " + prefix);
+                new ImageViewer(prefs, body);
+              }
+            } else {
+              if (rsp.length > 0) {
+                appendLine("Rsp: " + new String(rsp).trim());
+              }
             }
           }
         }
@@ -117,7 +129,19 @@ public class RglComm extends JFrame {
         running = false;
       }
     }
-  } 
+  }
+
+  private boolean isDataBlock (byte[] data) {
+    if (data[0] == '#' && data.length >= 11) {
+      for (int ii = 1; ii < 11; ii++) {
+        if (data[ii] < '0' || data[ii] > '9') {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
 
   private RglComm () {
     super("RglComm");
@@ -228,7 +252,6 @@ public class RglComm extends JFrame {
       buf.write(0x00);              // 10: Reserved(0x00)
       buf.write(0x00);              // 11: Reserved(0x00)
       byte[] data;
-      // :DISPlay:DATA?
       do {
         if (buf.size() > blockSize) {
           throw new IllegalStateException("buf.size(): " + buf.size() + " > " + "blockSize" + blockSize);
