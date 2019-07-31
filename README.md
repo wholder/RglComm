@@ -6,6 +6,11 @@
 
 To use RglComm, first select the device to communicate with using the selector, then type the command into the text field and press the Enter key, or press the "**`RUN`**" button.  Note; some devices, such as the Rigol DG4162 Function/Arbitrary Waveform Generator make need to be set to "PC" mode in the I/O menu before they will respond to commands:
 
+#### Precautions
+  - Be careful when using commends that switch measuring modes, such as issuing a **`:MEASure:CURRent:DC?`** command when the instrument is connected to a voltage source, as this can damage the instrument.
+  - Using the **`MEASure`** command switch from one mode to another can sometimes result in a read timeout, as it takes time for the DM3058 to internally make the mode change.  So, it's better to first use a **`FUNCtion`** command t0 select the measurment mode before issuing a **`MEASure`** command.
+  - Try to connect all instruments directly to the host computer, as adding intermediate USB hubs can interfere with communication and cause timeout errors.
+
 #### Commands common to most instruments include:
 
   - **`*IDN?`** - Queries the equipment ID and returns a String of text info
@@ -25,12 +30,10 @@ To use RglComm, first select the device to communicate with using the selector, 
   - **`:MEASure:CURRent:AC?`** - Measure AC Current
   - **`:FUNCtion:RESistance`** - Sets DM3058 to measure Resistance
   - **`:MEASure:RESistance?`** - Measure Resistance
- 
-Caution: be careful when using commends that switch measuring modes, such as issuing a **`:MEASure:CURRent:DC?`** command when the instrument is connected to a voltage source, as this can damage the instrument.  Also, using the **`MEASure`** command switch from one mode to another may result in a read timeout, as it takes time for the DM3058 to internally make the mode change.  So, it's better to first use a **`FUNCtion`** command t0 select the measurment mode before issuing a **`MEASure`** command.
-
-Also, the portions of the commands shown in lower case letters are optional and can be omitted.  So, for example, sending the command **`:FUNC:VOLT:DC`** is the same as sending the command **`:FUNCtion:VOLTage:DC`**.
-
-#### Commands for a Rigol DG4162 Function/Arbitrary Waveform Generator include:
+  
+Note: the portions of the commands shown in lower case letters are optional and can be omitted.  So, for example, sending the command **`:FUNC:VOLT:DC`** is the same as sending the command **`:FUNCtion:VOLTage:DC`**.
+  
+ #### Commands for a Rigol DG4162 Function/Arbitrary Waveform Generator include:
  
   - **`:SOURce1:FREQuency:FIXed 888888`** - Set Channel 1 Frequency to 888.888 kHz
   - **`:OUTPut1:STATe ON`** - Channel 1 Output On
