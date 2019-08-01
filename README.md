@@ -75,7 +75,7 @@ Note: the portions of the commands shown in lower case letters are optional and 
   - [**DS4024** Digital Oscilloscope](https://www.rigolna.com/products/digital-oscilloscopes/4000/)
   - [**DS1102E** Digital Oscilloscope](https://www.rigolna.com/products/digital-oscilloscopes/1000/)
   - [**DSA815** Spectrum Analyzer](https://www.rigolna.com/products/spectrum-analyzers/dsa800/)
-  - [**DG4162** Func/Wave Generator](https://www.rigolna.com/products/waveform-generators/dg4000/)
+  - [**DG4162** Function/Arbitrary Waveform Generator](https://www.rigolna.com/products/waveform-generators/dg4000/)
   
 If you wish to use other devices, you will need to add them to the "devices" Map in RglComm.java.  The utility program RglScan.java (included in .jar file) can be used to scan for Rigol devices that are powered on and connected to the computer.  You can type "**`scan`**" into the command text field and then press either the Enter key, or the "**`RUN`**" button.  Or, you can run it from the command line like this:
 
