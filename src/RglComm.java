@@ -204,7 +204,7 @@ public class RglComm extends JFrame {
     cmd += '\n';
     //System.out.print("Block Size: " + usb.maxPkt);
     // Note: making blockSize larger than 128 breaks communication with some devices
-    int blockSize = Math.min(usb.maxPkt, 128);
+    int blockSize = Math.min(usb.maxPkt, 512);
     ByteArrayOutputStream buf = new ByteArrayOutputStream();
     for (int idx = 0; idx < cmd.length(); idx += blockSize) {
       buf.reset();

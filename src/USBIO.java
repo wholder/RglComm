@@ -107,8 +107,8 @@ class USBIO {
   }
 
   byte[] receive () {
-    ByteBuffer inBuf = ByteBuffer.allocateDirect(maxPkt).order(ByteOrder.LITTLE_ENDIAN);
-    IntBuffer inNum = IntBuffer.allocate(2);                                // Used to get bytes read count
+    ByteBuffer inBuf = ByteBuffer.allocateDirect(maxPkt + 12).order(ByteOrder.LITTLE_ENDIAN);
+    IntBuffer inNum = IntBuffer.allocate(1);                                // Used to get bytes read count
     int error;
     int retry = 3;
     do {
@@ -116,7 +116,7 @@ class USBIO {
         if (inBuf.hasArray()) {
           return inBuf.array();
         } else {
-          int cnt = ((int) inNum.get(0) & 0xFF) + (inNum.get(1) << 8) + 12;
+          int cnt = inNum.get(0);
           int cap = inBuf.capacity();
           byte[] data = new byte[cnt];
           for (int ii = 0; ii < cnt && ii < cap; ii++) {
