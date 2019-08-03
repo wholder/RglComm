@@ -35,21 +35,6 @@ To use RglComm, first select the device to communicate with using the selector, 
   
 Note: the portions of the commands shown in lower case letters are optional and can be omitted.  So, for example, sending the command **`:FUNC:VOLT:DC`** is the same as sending the command **`:FUNCtion:VOLTage:DC`**.
   
- #### Commands for a Rigol DG4162 Function/Arbitrary Waveform Generator include:
- 
-  - **`:SOURce1:FREQuency:FIXed 888888`** - Set Channel 1 Frequency to 888.888 kHz
-  - **`:OUTPut1:STATe ON`** - Channel 1 Output On
-  - **`:OUTPut1:STATe OFF`** - Channel 1 Output Off
-  - **`:SOURce1:VOLTage?`** - Read Channel 1 Amplitude in Volts (pp)
-  - **`:SOURce1:VOLTage 2.25`** - Channel 1 Amplitude to 2.25 Volts
-  - **`:SOURce1:FUNCtion:SHAPe?`** - Read Selected Waveform Shape of Channel 1
-  - **`:SOURce1:FUNCtion:SHAPe SQUare`** - Set Channel 1 Output to Square Wave
-  - **`:SOURce1:FUNCtion:SHAPe SINusoid`** - Set Channel 1 Output to Sinusoid
-  - **`:SOURce1:FUNCtion:SHAPe RAMP`** - Set Channel 1 Output to Ramp (Triangle)
-  - **`:HCOPy:SDUMp:DATA?`** - Download and display Screen image from DG4162 (see below)
- 
-   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DG4162%20Capture.png" width="50%" height="50%"></p>
-
  #### Commands for a Rigol DS4024 Digital Oscilloscope include:
  
   - **`:CHANnel1:COUPling?`** - Query coupling mode of Channel 1 (AC,DC,GND)
@@ -65,6 +50,21 @@ Note: the portions of the commands shown in lower case letters are optional and 
   - **`:DISPlay:DATA?`** - Download and display Screen image from DS4024 (see below)
   
   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DS4024%20Capture.png" width="55%" height="55%"></p>
+
+ #### Commands for a Rigol DG4162 Function/Arbitrary Waveform Generator include:
+ 
+  - **`:SOURce1:FREQuency:FIXed 888888`** - Set Channel 1 Frequency to 888.888 kHz
+  - **`:OUTPut1:STATe ON`** - Channel 1 Output On
+  - **`:OUTPut1:STATe OFF`** - Channel 1 Output Off
+  - **`:SOURce1:VOLTage?`** - Read Channel 1 Amplitude in Volts (pp)
+  - **`:SOURce1:VOLTage 2.25`** - Channel 1 Amplitude to 2.25 Volts
+  - **`:SOURce1:FUNCtion:SHAPe?`** - Read Selected Waveform Shape of Channel 1
+  - **`:SOURce1:FUNCtion:SHAPe SQUare`** - Set Channel 1 Output to Square Wave
+  - **`:SOURce1:FUNCtion:SHAPe SINusoid`** - Set Channel 1 Output to Sinusoid
+  - **`:SOURce1:FUNCtion:SHAPe RAMP`** - Set Channel 1 Output to Ramp (Triangle)
+  - **`:HCOPy:SDUMp:DATA?`** - Download and display Screen image from DG4162 (see below)
+ 
+   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DG4162%20Capture.png" width="50%" height="50%"></p>
 
 #### Supported Devices
 
