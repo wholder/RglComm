@@ -89,9 +89,16 @@ public class RglComm extends JFrame {
     }
 
     PopMenuTextField (JComboBox<Rigol> select) {
+      setFont(getCodeFont(12));
       setToolTipText("Right click for shortcut commands");
       addMouseListener(new MouseAdapter() {
+        public void mouseReleased (MouseEvent ev1) {
+          processMouse(ev1);
+        }
         public void mousePressed (MouseEvent ev1) {
+          processMouse(ev1);
+        }
+        void processMouse (MouseEvent ev1) {
           if (ev1.isPopupTrigger()) {
             Rigol item = (Rigol) select.getSelectedItem();
             JPopupMenu menu = new JPopupMenu();
@@ -195,9 +202,9 @@ public class RglComm extends JFrame {
   private RglComm () {
     super("RglComm");
     select = new JComboBox<>(devices.toArray(new Rigol[0]));
-    text.setColumns(30);
+    text.setColumns(40);
     text.setRows(20);
-    text.setFont(new Font("Monaco", Font.PLAIN, 12));
+    text.setFont(getCodeFont(12));
     text.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     text.setEditable(false);
     JScrollPane scroll = new JScrollPane(text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -245,6 +252,19 @@ public class RglComm extends JFrame {
     if (!running){
       Thread worker = new Thread(this::doCommand);
       worker.start();
+    }
+  }
+
+  private static Font getCodeFont (int points) {
+    String os = System.getProperty("os.name").toLowerCase();
+    if (os.contains("win")) {
+      return new Font("Consolas", Font.PLAIN, points);
+    } else if (os.contains("mac")) {
+      return new Font("Menlo", Font.PLAIN, points);
+    } else if (os.contains("linux")) {
+      return new Font("Courier", Font.PLAIN, points);
+    } else {
+      return new Font("Courier", Font.PLAIN, points);
     }
   }
 

@@ -82,7 +82,9 @@ If you wish to use other devices, you will need to add them to the "devices" Map
   **`java -cp RglComm.jar RglScan`**
   
 ### Requirements
-A [Java JDK or JVM](https://www.java.com/en/) or [OpenJDK](http://openjdk.java.net) version 8, or later must be installed in order to run the code.  There is also a [**Runnable JAR file**](https://github.com/wholder/RglComm/blob/master/out/artifacts/RglComm_jar) included in the checked in code that you can download and run without having to compile the cource code.   On a Mac, just double click the **`RglComm.jar`** file and it should start.  However, you'll need to right click on the .jar file and select "Open" the first time you run RglComm due to new Mac OS X security checks.  You should also be able to run the JAR file on [Windows](https://windowsreport.com/jar-file-windows/) or [Linux](https://itsfoss.com/run-jar-file-ubuntu-linux/) systems, but you'll need to have a Java 8 JDK/JRE, or later installed and follow the appropriate process for each needed to run an executable JAR file on those platforms.
+A [Java JDK or JVM](https://www.java.com/en/) or [OpenJDK](http://openjdk.java.net) version 8, or later must be installed in order to run the code.  There is also a [**Runnable JAR file**](https://github.com/wholder/RglComm/blob/master/out/artifacts/RglComm_jar) included in the checked in code that you can download and run without having to compile the cource code.   On a Mac, just double click the **`RglComm.jar`** file and it should start.  However, you'll need to right click on the .jar file and select "Open" the first time you run RglComm due to new Mac OS X security checks.  
+
+ You should be able to run the JAR file on [Windows](https://windowsreport.com/jar-file-windows/) or [Linux](https://itsfoss.com/run-jar-file-ubuntu-linux/) systems, but the process can be tricky to setup.  I'm currently reasearching the steps needed to use RglComm on Windows and Linux and I'll post details as soon as I have them them worked out.
 
 ## RglComm
 RglComm uses the following Java code to perform some of its functions, or build this project:
