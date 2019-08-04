@@ -1,12 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -79,6 +75,59 @@ public class RglComm extends JFrame {
     devices.add(new Rigol("DS1054Z Digital Oscilloscope", 0x1AB1, 0x04CE)); // Not verified
   }
 
+  class PopMenuTextField extends JTextField {
+    private Map<String,String> shortcuts = new LinkedHashMap<>();
+    {
+      shortcuts.put("Identify", "*IDN?");
+      shortcuts.put("Clear Error", "*CLS");
+      shortcuts.put("Self Test", "*TST?");
+      shortcuts.put("DS4024/Screen Capture", ":DISPlay:DATA?");
+      shortcuts.put("DG4162/Screen Capture", ":HCOPy:SDUMp:DATA?");
+      shortcuts.put("DM3058/Measure DC Voltage", ":FUNCtion:VOLTage:DC;*WAI;:MEASure:VOLTage:DC?");
+      shortcuts.put("DM3058/Measure AC Voltage", ":FUNCtion:VOLTage:AC;*WAI;:MEASure:VOLTage:AC?");
+      shortcuts.put("DM3058/Measure Resistance", ":FUNCtion:RESistance;*WAI;:MEASure:RESistance?");
+    }
+
+    PopMenuTextField (JComboBox<Rigol> select) {
+      setToolTipText("Right click for shortcut commands");
+      addMouseListener(new MouseAdapter() {
+        public void mousePressed (MouseEvent ev1) {
+          if (ev1.isPopupTrigger()) {
+            Rigol item = (Rigol) select.getSelectedItem();
+            JPopupMenu menu = new JPopupMenu();
+            boolean addSep = true;
+            for (String key : shortcuts.keySet()) {
+              String[] parts = key.split("/");
+              JMenuItem menuItem = null;
+              if (parts.length == 1) {
+                // Add common commands
+                menuItem = new JMenuItem(key);
+              } else if (parts.length == 2 && item != null) {
+                if (addSep) {
+                  menu.addSeparator();
+                  addSep = false;
+                }
+                // Add device-specific commands
+                String[] tmp = item.name.split(" ");
+                if (tmp.length >= 2 && tmp[0].equals(parts[0])) {
+                  menuItem = new JMenuItem(parts[1]);
+                }
+              }
+              if (menuItem != null) {
+                menu.add(menuItem);
+                menuItem.addActionListener(ev2 -> {
+                  setText(shortcuts.get(key));
+                  runCommand();
+                });
+              }
+            }
+            menu.show(ev1.getComponent(), ev1.getX(), ev1.getY());
+          }
+        }
+      });
+    }
+  }
+
   public static void main (String[] args) {
     new RglComm();
   }
@@ -145,6 +194,7 @@ public class RglComm extends JFrame {
 
   private RglComm () {
     super("RglComm");
+    select = new JComboBox<>(devices.toArray(new Rigol[0]));
     text.setColumns(30);
     text.setRows(20);
     text.setFont(new Font("Monaco", Font.PLAIN, 12));
@@ -153,11 +203,10 @@ public class RglComm extends JFrame {
     JScrollPane scroll = new JScrollPane(text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     add(scroll, BorderLayout.CENTER);
     JPanel controls = new JPanel(new FlowLayout());
-    command = new JTextField();
+    command = new PopMenuTextField(select);
     command.setText("*IDN?");
     command.setColumns(30);
     controls.add(command);
-    select = new JComboBox<>(devices.toArray(new Rigol[0]));
     try {
       select.setSelectedIndex(prefs.getInt("select", 0));
     } catch (Exception ex) {
@@ -166,12 +215,12 @@ public class RglComm extends JFrame {
     select.addActionListener(ev -> prefs.putInt("select", select.getSelectedIndex()));
     controls.add(select);
     JButton run = new JButton("RUN");
-    run.addActionListener(e -> startTests());
+    run.addActionListener(e -> runCommand());
     command.addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent ev) {
         if(ev.getKeyCode() == KeyEvent.VK_ENTER) {
-          startTests();
+          runCommand();
         }
       }
     });
@@ -192,7 +241,7 @@ public class RglComm extends JFrame {
     setVisible(true);
   }
 
-  private void startTests () {
+  private void runCommand () {
     if (!running){
       Thread worker = new Thread(this::doCommand);
       worker.start();
