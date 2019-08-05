@@ -88,7 +88,7 @@ A [Java JDK or JVM](https://www.java.com/en/) or [OpenJDK](http://openjdk.java.n
 On a Mac, just double click the **`RglComm.jar`** file and it should start.  However, you'll need to right click on the .jar file and select "Open" the first time you run RglComm due to new Mac OS X security checks.  
 
 #### Windows
-Follow [these instructions](https://windowsreport.com/jar-file-windows/) to run the JAR file on Windows.  However, you will first need to install device drivers for the Rigol devices you are using.  The instructions on this page provides more details, but you can use the automated driver installer [Zadig](https://zadig.akeo.ie) to install a generic driver for each Rigol device using its Vendor and Product Ids:
+Follow [these instructions](https://windowsreport.com/jar-file-windows/) to run the JAR file on Windows.  However, you will first need to install device drivers for the Rigol devices you are using.  The instructions on this page provides more details, but you can use the automated driver installer [Zadig](https://zadig.akeo.ie) to install a generic driver for each Rigol device using its Vendor and Product Ids, like this:
 
    <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/zadig-2.4.png"></p>
   
