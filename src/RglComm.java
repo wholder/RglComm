@@ -89,7 +89,6 @@ public class RglComm extends JFrame {
     }
 
     PopMenuTextField (JComboBox<Rigol> select) {
-      setFont(getCodeFont(12));
       setToolTipText("Right click for shortcut commands");
       addMouseListener(new MouseAdapter() {
         public void mouseReleased (MouseEvent ev1) {
@@ -202,9 +201,9 @@ public class RglComm extends JFrame {
   private RglComm () {
     super("RglComm");
     select = new JComboBox<>(devices.toArray(new Rigol[0]));
+    text.setFont(getCodeFont(12));
     text.setColumns(40);
     text.setRows(20);
-    text.setFont(getCodeFont(12));
     text.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     text.setEditable(false);
     JScrollPane scroll = new JScrollPane(text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

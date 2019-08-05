@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
-import static org.usb4java.LibUsb.ERROR_NOT_FOUND;
+import static org.usb4java.LibUsb.*;
 
 /**
  *  Implements a bulk transfer I/O driver that uses usb4java to communicate with a USB Device

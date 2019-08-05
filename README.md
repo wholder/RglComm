@@ -81,12 +81,31 @@ If you wish to use other devices, you will need to add them to the "devices" Map
 
   **`java -cp RglComm.jar RglScan`**
   
-### Requirements
-A [Java JDK or JVM](https://www.java.com/en/) or [OpenJDK](http://openjdk.java.net) version 8, or later must be installed in order to run the code.  There is also a [**Runnable JAR file**](https://github.com/wholder/RglComm/blob/master/out/artifacts/RglComm_jar) included in the checked in code that you can download and run without having to compile the cource code.   On a Mac, just double click the **`RglComm.jar`** file and it should start.  However, you'll need to right click on the .jar file and select "Open" the first time you run RglComm due to new Mac OS X security checks.  
+### **Requirements**
+A [Java JDK or JVM](https://www.java.com/en/) or [OpenJDK](http://openjdk.java.net) version 8, or later must be installed in order to run the code.  There is also a [**Runnable JAR file**](https://github.com/wholder/RglComm/blob/master/out/artifacts/RglComm_jar) included in the checked in code that you can download and run without having to compile the cource code.
 
- You should be able to run the JAR file on [Windows](https://windowsreport.com/jar-file-windows/) or [Linux](https://itsfoss.com/run-jar-file-ubuntu-linux/) systems, but the process can be tricky to setup.  I'm currently reasearching the steps needed to use RglComm on Windows and Linux and I'll post details as soon as I have them them worked out.
+#### macOS
+On a Mac, just double click the **`RglComm.jar`** file and it should start.  However, you'll need to right click on the .jar file and select "Open" the first time you run RglComm due to new Mac OS X security checks.  
 
-## RglComm
+#### Windows
+Follow [these instructions](https://windowsreport.com/jar-file-windows/) to run the JAR file on Windows.  However, you will first need to install device drivers for the Rigol devices you are using.  The instructions on this page provides more details, but you can use the automated driver installer [Zadig](https://zadig.akeo.ie) to install a generic driver for each Rigol device using its Vendor and Product Ids:
+
+   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/zadig-2.4.png"></p>
+  
+#### Linux
+  Follow [these instructions](https://itsfoss.com/run-jar-file-ubuntu-linux/)  to run the JAR file on a Linux system  However, you will first need to set the USB permissions for each device using a [udev-based USB permission rule](http://ask.xmodulo.com/change-usb-device-permission-linux.html).  For example, to set USB permissions for the DM3058, create a file named something like "**`50-myusb.rules`**" in the "**`/lib/udev/rules.d/`**" directory that includes the following text:
+  
+    SUBSYSTEMS=="usb", ATTRS{idVendor}=="1ab1", ATTRS{idProduct}=="09c4", GROUP="users", MODE="0666"
+
+Alternately, you can grant permissions for all Rigol devices by instead putting the following text in the file:
+
+    SUBSYSTEMS=="usb", ATTRS{idVendor}=="1ab1", GROUP="users", MODE="0666"
+
+Then, save the file and restart Linux, or type this command to reload the udev rules:
+
+    sudo udevadm control --reload-rules
+
+## Credits
 RglComm uses the following Java code to perform some of its functions, or build this project:
 - [Usb4Java](http://usb4java.org) is used to perform low-level USB I/O using the USBTMC protocol
 - [IntelliJ IDEA from JetBrains](https://www.jetbrains.com/idea/) (my favorite development environment for Java coding. Thanks JetBrains!)
