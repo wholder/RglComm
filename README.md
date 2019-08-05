@@ -93,11 +93,11 @@ Follow [these instructions](https://windowsreport.com/jar-file-windows/) to run 
    <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/zadig-2.4.png"></p>
   
 #### Linux
-  Follow [these instructions](https://itsfoss.com/run-jar-file-ubuntu-linux/)  to run the JAR file on a Linux system  However, you will first need to set the USB permissions for each device using a [udev-based USB permission rule](http://ask.xmodulo.com/change-usb-device-permission-linux.html).  For example, to set USB permissions for the DM3058, create a file named something like "**`50-myusb.rules`**" in the "**`/lib/udev/rules.d/`**" directory that includes the following text:
+  Follow [these instructions](https://itsfoss.com/run-jar-file-ubuntu-linux/)  to run the JAR file on a Linux system.  However, you will first need to setup the USB permissions for each device using a [udev-based USB permission rule](http://ask.xmodulo.com/change-usb-device-permission-linux.html).  For example, to set USB permissions for the DM3058 Digital Multimeter, create a file named something like "**`50-myusb.rules`**" in the "**`/lib/udev/rules.d/`**" directory that includes the following text:
   
     SUBSYSTEMS=="usb", ATTRS{idVendor}=="1ab1", ATTRS{idProduct}=="09c4", GROUP="users", MODE="0666"
 
-Alternately, you can grant permissions for all Rigol devices by instead putting the following text in the file:
+This rule identifies the device by using its USB Vendor Id (**`1ab1`**) and Product Id (**`09c4`**).  Alternately, you can grant permissions for all Rigol devices by only specifying the Vendor Id (**`1ab1`**) in the file, such as:
 
     SUBSYSTEMS=="usb", ATTRS{idVendor}=="1ab1", GROUP="users", MODE="0666"
 
