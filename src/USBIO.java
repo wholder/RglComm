@@ -96,6 +96,12 @@ class USBIO {
     throw new LibUsbException("Unable to open selected device", result < 0 ? result : ERROR_NOT_FOUND);
   }
 
+  void resetDevice () {
+    if (handle != null) {
+      LibUsb.resetDevice(handle);
+    }
+  }
+
   void send (byte[] data) {
     ByteBuffer outBuf = BufferUtils.allocateByteBuffer(data.length);
     outBuf.put(data);

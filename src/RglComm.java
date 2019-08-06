@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.ByteArrayOutputStream;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -81,11 +82,11 @@ public class RglComm extends JFrame {
       shortcuts.put("Identify", "*IDN?");
       shortcuts.put("Clear Error", "*CLS");
       shortcuts.put("Self Test", "*TST?");
-      shortcuts.put("DS4024/Screen Capture", ":DISPlay:DATA?");
-      shortcuts.put("DG4162/Screen Capture", ":HCOPy:SDUMp:DATA?");
-      shortcuts.put("DM3058/Measure DC Voltage", ":FUNCtion:VOLTage:DC;*WAI;:MEASure:VOLTage:DC?");
-      shortcuts.put("DM3058/Measure AC Voltage", ":FUNCtion:VOLTage:AC;*WAI;:MEASure:VOLTage:AC?");
-      shortcuts.put("DM3058/Measure Resistance", ":FUNCtion:RESistance;*WAI;:MEASure:RESistance?");
+      shortcuts.put("DS4024/Screen Capture", ":DISP:DATA?");
+      shortcuts.put("DG4162/Screen Capture", ":HCOP:SDUM:DATA?");
+      shortcuts.put("DM3058/Measure DC Voltage", ":FUNC:VOLT:DC;*WAI;:MEAS:VOLT:DC?");
+      shortcuts.put("DM3058/Measure AC Voltage", ":FUNC:VOLT:AC;*WAI;:MEAS:VOLT:AC?");
+      shortcuts.put("DM3058/Measure Resistance", ":FUNC:RES;*WAI;:MEAS:RES?");
     }
 
     PopMenuTextField (JComboBox<Rigol> select) {
@@ -152,7 +153,13 @@ public class RglComm extends JFrame {
         usb = new USBIO(sel.vend, sel.prod);
         command.setText("");
         String[] parts = cmd.split(";");
-        for (String part : parts) {
+        for (int ii = 0; ii < parts.length; ii++) {
+          boolean doPrint = ii == parts.length - 1;
+          String part = parts[ii];
+          if (doPrint) {
+            appendLine("Snd: " + part);
+          }
+          part += '\n';
           byte[] rsp = sendCmd(part);
           if (rsp != null) {
             if (isDataBlock(rsp)) {
@@ -168,8 +175,18 @@ public class RglComm extends JFrame {
                 new ImageViewer(prefs, body);
               }
             } else {
-              if (rsp.length > 0) {
-                appendLine("Rsp: " + new String(rsp).trim());
+              if (doPrint) {
+                if (rsp.length > 0) {
+                  String value = new String(rsp).trim();
+                  try {
+                    double dVal = Double.parseDouble(value);
+                    DecimalFormat fmt = new DecimalFormat("#.#########");
+                    value += "  (" + fmt.format(dVal) + ")";
+                  } catch (NumberFormatException ex) {
+                    // Ignore
+                  }
+                  appendLine("Rsp: " + value);
+                }
               }
             }
           }
@@ -177,6 +194,7 @@ public class RglComm extends JFrame {
       } catch (Exception ex) {
         appendLine("Err: " + ex.toString());
         ex.printStackTrace();
+        usb.resetDevice();
       } finally {
         if (usb != null) {
           usb.close();
@@ -268,8 +286,6 @@ public class RglComm extends JFrame {
   }
 
   private byte[] sendCmd (String cmd) {
-    appendLine("Snd: " + cmd);
-    cmd += '\n';
     //System.out.print("Block Size: " + usb.maxPkt);
     // Note: making blockSize larger than 128 breaks communication with some devices
     int blockSize = Math.min(usb.maxPkt, 512);
@@ -302,7 +318,6 @@ public class RglComm extends JFrame {
       }
       usb.send(buf.toByteArray());
     }
-    System.out.println();
     if (cmd.contains("?")) {
       bTag++;
       ByteArrayOutputStream rec = new ByteArrayOutputStream();
