@@ -55,8 +55,8 @@ public class RglComm extends JFrame {
     {
       shortcuts.put("Identify", "*IDN?");
       shortcuts.put("Clear Error", "*CLS");
-      shortcuts.put("DS1102E/Wave Capture Ch1", ":WAV:POIN:NOR;:WAVeform:DATA? CH1");
-      shortcuts.put("DS1102E/Wave Capture Ch2", ":WAV:POIN:NOR;:WAVeform:DATA? CH2");
+      shortcuts.put("DS1102E/Wave Capture Ch1", ":WAV:POIN:MODE NOR;:WAVeform:DATA? CH1");
+      shortcuts.put("DS1102E/Wave Capture Ch2", ":WAV:POIN:MODE NOR;:WAVeform:DATA? CH2");
       shortcuts.put("DS4024/Screen Capture", ":DISP:DATA?");
       shortcuts.put("DG4162/Screen Capture", ":HCOP:SDUM:DATA?");
       shortcuts.put("DM3058/Measure DC Voltage", ":FUNC:VOLT:DC;DLY1;:MEAS:VOLT:DC?");
