@@ -55,7 +55,7 @@ Note: the portions of the commands shown in lower case letters are optional and 
   - **`:WAV:POIN:NOR;:WAVeform:DATA? CH1`** - Select normal mode then display waveform from DS1102E Ch 1 (see below)
   - **`:WAV:POIN:NOR;:WAVeform:DATA? CH2`** - Select normal mode then display waveform from DS1102E Ch 2
 
-   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DS1102E%20Capture.png" width="55%" height="55%"></p>
+   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DS1102E%20Capture.png" width="40%" height="40%"></p>
 
  #### Commands for a Rigol DG4162 Function/Arbitrary Waveform Generator include:
  
@@ -70,7 +70,7 @@ Note: the portions of the commands shown in lower case letters are optional and 
   - **`:SOURce1:FUNCtion:SHAPe RAMP`** - Set Channel 1 Output to Ramp (Triangle)
   - **`:HCOPy:SDUMp:DATA?`** - Download and display Screen image from DG4162 (see below)
  
-   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DG4162%20Capture.png" width="40%" height="40%"></p>
+   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DG4162%20Capture.png" width="50%" height="50%"></p>
 
 #### Supported Devices
 
