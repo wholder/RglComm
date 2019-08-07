@@ -9,10 +9,11 @@ import java.util.prefs.Preferences;
 
 class ImageViewer extends JFrame {
   static class Surface extends JPanel {
-    private Image img;
+    BufferedImage img;
 
-    Surface(Image img) {
-      this.img = img;
+    Surface(byte[] data) throws Exception {
+      ByteArrayInputStream bis = new ByteArrayInputStream(data);
+      img = ImageIO.read(bis);
       setPreferredSize(new Dimension(img.getWidth(null), img.getHeight(null)));
     }
 
@@ -25,9 +26,8 @@ class ImageViewer extends JFrame {
 
   ImageViewer (Preferences prefs, byte[] data) throws Exception {
     setTitle("ImageViewer");
-    ByteArrayInputStream bis = new ByteArrayInputStream(data);
-    BufferedImage img = ImageIO.read(bis);
-    add(new Surface(img));
+    Surface surface = new Surface(data);
+    add(surface);
     JMenuBar menuBar = new JMenuBar();
     setJMenuBar(menuBar);
     JMenu menu = new JMenu("File");
@@ -47,7 +47,7 @@ class ImageViewer extends JFrame {
         File file = chooser.getSelectedFile();
         prefs.put("file.dir", chooser.getCurrentDirectory().toString());
         try {
-          ImageIO.write(img, "png", file);
+          ImageIO.write(surface.img, "png", file);
         } catch (Exception ex) {
           ex.printStackTrace();
         }

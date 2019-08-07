@@ -39,32 +39,6 @@ public class RglComm extends JFrame {
     }
   }
 
-  /*
-   *   Vendor 0x1AB1, Product 0x09C4
-   *   Manufacturer: Rigol Technologies
-   *   Product:      DM3000 SERIES
-   *
-   *   Vendor 0x1AB1, Product 0x0E11
-   *   Manufacturer: Rigol Technologies.
-   *   Product:      DP800 Serials
-   *
-   *   Vendor 0x1AB1, Product 0x04B1
-   *   Manufacturer: Rigol Technologies
-   *   Product:      DS4000 Series
-   *
-   *   Vendor 0x1AB1, Product 0x0588
-   *   Manufacturer: Rigol Technologies
-   *   Product:      DS1000 SERIES
-   *
-   *   Vendor 0x1AB1, Product 0x0641
-   *   Manufacturer: Rigol Technologies
-   *   Product:      DG4162
-   *
-   *   Vendor 0x1AB1, Product 0x0960
-   *   Manufacturer: Rigol Technologies
-   *   Product:      DSA815
-   */
-
   static {
     //                     Selector Description           VendId  ProdId
     devices.add(new Rigol("DM3058 Digital Multimeter",    0x1AB1, 0x09C4));
@@ -81,12 +55,13 @@ public class RglComm extends JFrame {
     {
       shortcuts.put("Identify", "*IDN?");
       shortcuts.put("Clear Error", "*CLS");
-      shortcuts.put("Self Test", "*TST?");
+      shortcuts.put("DS1102E/Wave Capture Ch1", ":WAV:POIN:NOR;:WAVeform:DATA? CH1");
+      shortcuts.put("DS1102E/Wave Capture Ch2", ":WAV:POIN:NOR;:WAVeform:DATA? CH2");
       shortcuts.put("DS4024/Screen Capture", ":DISP:DATA?");
       shortcuts.put("DG4162/Screen Capture", ":HCOP:SDUM:DATA?");
-      shortcuts.put("DM3058/Measure DC Voltage", ":FUNC:VOLT:DC;*WAI;:MEAS:VOLT:DC?");
-      shortcuts.put("DM3058/Measure AC Voltage", ":FUNC:VOLT:AC;*WAI;:MEAS:VOLT:AC?");
-      shortcuts.put("DM3058/Measure Resistance", ":FUNC:RES;*WAI;:MEAS:RES?");
+      shortcuts.put("DM3058/Measure DC Voltage", ":FUNC:VOLT:DC;DLY1;:MEAS:VOLT:DC?");
+      shortcuts.put("DM3058/Measure AC Voltage", ":FUNC:VOLT:AC;DLY1;:MEAS:VOLT:AC?");
+      shortcuts.put("DM3058/Measure Resistance", ":FUNC:RES;DLY1;:MEAS:RES?");
     }
 
     PopMenuTextField (JComboBox<Rigol> select) {
@@ -155,24 +130,36 @@ public class RglComm extends JFrame {
         String[] parts = cmd.split(";");
         for (int ii = 0; ii < parts.length; ii++) {
           boolean doPrint = ii == parts.length - 1;
-          String part = parts[ii];
-          if (doPrint) {
-            appendLine("Snd: " + part);
+          cmd = parts[ii];
+          if (cmd.length() >= 3 && cmd.startsWith("DLY")) {
+            int seconds = cmd.length() > 3 ? Integer.parseInt(cmd.substring(3)) : 1;
+            try {
+              Thread.sleep(seconds * 1000);
+            } catch (InterruptedException ex) {
+              ex.printStackTrace();
+            }
+            continue;
           }
-          part += '\n';
-          byte[] rsp = sendCmd(part);
+          if (doPrint) {
+            appendLine("Snd: " + cmd);
+          }
+          byte[] rsp = sendCmd(cmd + '\n');
           if (rsp != null) {
-            if (isDataBlock(rsp)) {
-              String prefix = new String(Arrays.copyOf(rsp, 11));
-              byte[] body = Arrays.copyOfRange(rsp, 11, rsp.length);
+            int pLen = prefixLength(rsp);
+            if (pLen > 0) {
+              String prefix = new String(Arrays.copyOf(rsp, pLen));
+              byte[] body = Arrays.copyOfRange(rsp, pLen, rsp.length);
               if (body[0] == 'B' && body[1] == 'M') {
                 // :DISPlay:DATA?
-                appendLine("Rsp: bitmap received: " + prefix);
+                appendLine("Rsp: BMP image received: " + prefix);
                 new ImageViewer(prefs, body);
               } else if (body[0] == (byte) 0xFF && body[1] == (byte) 0xD8) {
                 // :HCOPy:SDUMp:DATA?
-                appendLine("Rsp: data block received: " + prefix);
+                appendLine("Rsp: JPG image received: " + prefix);
                 new ImageViewer(prefs, body);
+              } else {
+                appendLine("Rsp: Waveform received: " + prefix);
+                new WaveViewer(prefs, body);
               }
             } else {
               if (doPrint) {
@@ -204,16 +191,19 @@ public class RglComm extends JFrame {
     }
   }
 
-  private boolean isDataBlock (byte[] data) {
-    if (data[0] == '#' && data.length >= 11) {
-      for (int ii = 1; ii < 11; ii++) {
-        if (data[ii] < '0' || data[ii] > '9') {
-          return false;
+  private int prefixLength (byte[] data) {
+    if (data.length >= 2 && data[0] == '#' && data[1] >= '0' && data[1] <= '9') {
+      int len = (char) data[1] - '0';
+      if (data.length >= len + 2) {
+        for (int ii = 2; ii < len; ii++) {
+          if (data[ii] < '0' || data[ii] > '9') {
+            return 0;
+          }
         }
+        return len + 2;
       }
-      return true;
     }
-    return false;
+    return 0;
   }
 
   private RglComm () {
@@ -342,9 +332,9 @@ public class RglComm extends JFrame {
         usb.send(buf.toByteArray());
         // delay(50);
         data = usb.receive();
-        int size = ((int) data[4] & 0xFF) + (((int) data[5] & 0xFF) << 8);
-        for (int ii = 0; ii < size; ii++) {
-          rec.write(data[12 + ii]);
+        //int size = ((int) data[4] & 0xFF) + (((int) data[5] & 0xFF) << 8);
+        for (int ii = 12; ii < data.length; ii++) {
+          rec.write(data[ii]);
         }
       } while (data[8] == 0);
       return rec.toByteArray();

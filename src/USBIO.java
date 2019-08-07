@@ -113,7 +113,7 @@ class USBIO {
   }
 
   byte[] receive () {
-    ByteBuffer inBuf = ByteBuffer.allocateDirect(maxPkt + 12).order(ByteOrder.LITTLE_ENDIAN);
+    ByteBuffer inBuf = ByteBuffer.allocateDirect(maxPkt * 2).order(ByteOrder.LITTLE_ENDIAN);
     IntBuffer inNum = IntBuffer.allocate(1);                                // Used to get bytes read count
     int error;
     int retry = 3;

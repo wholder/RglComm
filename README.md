@@ -17,7 +17,6 @@ To use RglComm, first select the device to communicate with using the selector, 
   - **`*IDN?`** - Queries the equipment ID and returns a String of text info
   - **`*CLS`** - Clear Status Register
   - **`*RST`**  - Resets the instrument to factory defined condition
-  - **`*TST?`** - Run self tests (0 = passed, 1 = failed)
   - **`*WAI`** - Waits until all pending commands are completed, before executing any other commands
  
 #### Commands for the Rigol DM3058 Digital Multimeter include:
@@ -33,7 +32,7 @@ To use RglComm, first select the device to communicate with using the selector, 
   - **`:FUNCtion:RESistance`** - Sets DM3058 to measure Resistance
   - **`:MEASure:RESistance?`** - Measure Resistance
   
-Note: the portions of the commands shown in lower case letters are optional and can be omitted.  So, for example, sending the command **`:FUNC:VOLT:DC`** is the same as sending the command **`:FUNCtion:VOLTage:DC`**.
+Note: the portions of the commands shown in lower case letters are optional and can be omitted.  So, for example, sending the command **`:FUNC:VOLT:DC`** is the same as sending the command **`:FUNCtion:VOLTage:DC`**.  Also, multiple commands can be entered as one line by separating each command with a '**_;_**' character.
   
  #### Commands for a Rigol DS4024 Digital Oscilloscope include:
  
@@ -50,6 +49,13 @@ Note: the portions of the commands shown in lower case letters are optional and 
   - **`:DISPlay:DATA?`** - Download and display Screen image from DS4024 (see below)
   
   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DS4024%20Capture.png" width="55%" height="55%"></p>
+
+ #### Commands for a Rigol DS1102E Digital Oscilloscope include:
+ 
+  - **`:WAV:POIN:NOR;:WAVeform:DATA? CH1`** - Select 600 point mode then display waveform from DS1102E Channel 1 (see below)
+  - **`:WAV:POIN:NOR;:WAVeform:DATA? CH2`** - Select 600 point mode then display waveform from DS1102E Channel 2
+
+   <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DS1102E%20Capture.png" width="55%" height="55%"></p>
 
  #### Commands for a Rigol DG4162 Function/Arbitrary Waveform Generator include:
  
