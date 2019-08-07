@@ -158,8 +158,12 @@ public class RglComm extends JFrame {
                 appendLine("Rsp: JPG image received: " + prefix);
                 new ImageViewer(prefs, body);
               } else {
-                appendLine("Rsp: Waveform received: " + prefix);
-                new WaveViewer(prefs, body);
+                if (body.length == 600) {
+                  appendLine("Rsp: Waveform received: " + prefix);
+                  new WaveViewer(prefs, body);
+                } else {
+                  appendLine("Rsp: Waveform received: " + prefix + " but too large to display");
+                }
               }
             } else {
               if (doPrint) {
