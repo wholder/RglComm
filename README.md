@@ -52,8 +52,8 @@ Note: the portions of the commands shown in lower case letters are optional and 
 
  #### Commands for a Rigol DS1102E Digital Oscilloscope include:
  
-  - **`:WAV:POIN:NOR;:WAVeform:DATA? CH1`** - Select 600 point mode then display waveform from DS1102E Channel 1 (see below)
-  - **`:WAV:POIN:NOR;:WAVeform:DATA? CH2`** - Select 600 point mode then display waveform from DS1102E Channel 2
+  - **`:WAV:POIN:NOR;:WAVeform:DATA? CH1`** - Select normal mode then display waveform from DS1102E Ch 1 (see below)
+  - **`:WAV:POIN:NOR;:WAVeform:DATA? CH2`** - Select normal mode then display waveform from DS1102E Ch 2
 
    <p align="center"><img src="https://github.com/wholder/RglComm/blob/master/images/DS1102E%20Capture.png" width="55%" height="55%"></p>
 
